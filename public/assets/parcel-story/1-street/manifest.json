@@ -1,0 +1,234 @@
+{
+  "partner-carry-1": {
+    "file": "partner-carry-1.avif",
+    "w": 859,
+    "h": 2000,
+    "cx": 0.425
+  },
+  "partner-carry-3": {
+    "file": "partner-carry-3.avif",
+    "w": 902,
+    "h": 2000,
+    "cx": 0.423
+  },
+  "partner-place": {
+    "file": "partner-place.avif",
+    "w": 1073,
+    "h": 2000,
+    "cx": 0.199
+  },
+  "partner-walk": {
+    "file": "partner-walk.avif",
+    "w": 784,
+    "h": 2000,
+    "cx": 0.482
+  },
+  "partner-receive": {
+    "file": "partner-receive.avif",
+    "w": 733,
+    "h": 2000,
+    "cx": 0.262
+  },
+  "customer-offer": {
+    "file": "customer-offer.avif",
+    "w": 841,
+    "h": 2000,
+    "cx": 0.288
+  },
+  "customer-stand": {
+    "file": "customer-stand.avif",
+    "w": 420,
+    "h": 2000,
+    "cx": 0.389
+  },
+  "partner-driving": {
+    "file": "partner-driving.avif",
+    "w": 600,
+    "h": 582
+  },
+  "bld-cafe": {
+    "file": "bld-cafe.avif",
+    "w": 1026,
+    "h": 1500
+  },
+  "bld-it": {
+    "file": "bld-it.avif",
+    "w": 1516,
+    "h": 1500
+  },
+  "bld-retail": {
+    "file": "bld-retail.avif",
+    "w": 1103,
+    "h": 1500
+  },
+  "bld-med": {
+    "file": "bld-med.avif",
+    "w": 1131,
+    "h": 1500
+  },
+  "bld-elec": {
+    "file": "bld-elec.avif",
+    "w": 1286,
+    "h": 1500
+  },
+  "bld-fin": {
+    "file": "bld-fin.avif",
+    "w": 1206,
+    "h": 1500
+  },
+  "shop-boutique": {
+    "file": "shop-boutique.avif",
+    "w": 1262,
+    "h": 1100
+  },
+  "office-corporate": {
+    "file": "office-corporate.avif",
+    "w": 2043,
+    "h": 1100
+  },
+  "seller-corporate": {
+    "file": "seller-corporate.avif",
+    "w": 496,
+    "h": 2000,
+    "cx": 0.394
+  },
+  "parcel-corp1": {
+    "file": "parcel-corp1.avif",
+    "w": 545,
+    "h": 560
+  },
+  "parcel-corp2": {
+    "file": "parcel-corp2.avif",
+    "w": 468,
+    "h": 560
+  },
+  "parcel-corp3": {
+    "file": "parcel-corp3.avif",
+    "w": 457,
+    "h": 560
+  },
+  "parcel-corp4": {
+    "file": "parcel-corp4.avif",
+    "w": 241,
+    "h": 560
+  },
+  "parcel-corp5": {
+    "file": "parcel-corp5.avif",
+    "w": 990,
+    "h": 560
+  },
+  "life-p01": {
+    "file": "life-p01.avif",
+    "w": 306,
+    "h": 760,
+    "m": 1.64
+  },
+  "life-p02": {
+    "file": "life-p02.avif",
+    "w": 253,
+    "h": 760,
+    "m": 1.73
+  },
+  "life-p03": {
+    "file": "life-p03.avif",
+    "w": 248,
+    "h": 760,
+    "m": 1.75
+  },
+  "life-p04": {
+    "file": "life-p04.avif",
+    "w": 262,
+    "h": 760,
+    "m": 1.68
+  },
+  "life-p05": {
+    "file": "life-p05.avif",
+    "w": 265,
+    "h": 760,
+    "m": 1.69
+  },
+  "life-p06": {
+    "file": "life-p06.avif",
+    "w": 253,
+    "h": 760,
+    "m": 1.65
+  },
+  "life-p07": {
+    "file": "life-p07.avif",
+    "w": 271,
+    "h": 760,
+    "m": 1.76
+  },
+  "life-p08": {
+    "file": "life-p08.avif",
+    "w": 373,
+    "h": 760,
+    "m": 1.6
+  },
+  "life-p09": {
+    "file": "life-p09.avif",
+    "w": 381,
+    "h": 760,
+    "m": 1.72
+  },
+  "life-p10": {
+    "file": "life-p10.avif",
+    "w": 279,
+    "h": 760,
+    "m": 1.6
+  },
+  "life-p11": {
+    "file": "life-p11.avif",
+    "w": 269,
+    "h": 760,
+    "m": 1.73
+  },
+  "life-p12": {
+    "file": "life-p12.avif",
+    "w": 244,
+    "h": 760,
+    "m": 1.36
+  },
+  "life-moto": {
+    "file": "life-moto.avif",
+    "w": 918,
+    "h": 570,
+    "m": 1.1
+  },
+  "life-scooter": {
+    "file": "life-scooter.avif",
+    "w": 790,
+    "h": 567,
+    "m": 1.05
+  },
+  "life-cart": {
+    "file": "life-cart.avif",
+    "w": 850,
+    "h": 900,
+    "m": 2.3
+  },
+  "life-bicycle": {
+    "file": "life-bicycle.avif",
+    "w": 831,
+    "h": 471,
+    "m": 1.05
+  },
+  "life-cafe-couple": {
+    "file": "life-cafe-couple.avif",
+    "w": 878,
+    "h": 753,
+    "m": 1.28
+  },
+  "life-cafe-menu": {
+    "file": "life-cafe-menu.avif",
+    "w": 334,
+    "h": 449,
+    "m": 0.8
+  },
+  "life-cafe-reader": {
+    "file": "life-cafe-reader.avif",
+    "w": 885,
+    "h": 727,
+    "m": 1.23
+  }
+}

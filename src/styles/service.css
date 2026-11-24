@@ -1,0 +1,739 @@
+/* ============================================================================
+   SERVICE — the scroll-driven freight story.
+
+   Three stacked "screens", each a sticky stage driven off scroll progress:
+     first-screen   street: the truck collects one parcel, drives on, collects three
+     second-screen  road: the loaded truck drives while the black services
+                    panel scrolls past it horizontally
+     third-screen   overhead: the camera flips top-down and the truck takes
+                    the curve
+
+   Every moving part is its own cut-out layer, so only transform/opacity are
+   ever animated.
+   ========================================================================== */
+
+.home-service-wrap { position: relative; }
+
+.home-service {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  background-color: var(--bg-main);
+  color: var(--content-main);
+  contain: paint;
+}
+
+/* --- speedometer: a sticky readout driven off scroll velocity ------------- */
+.home-service-speed {
+  position: sticky;
+  top: calc(8.4 * var(--section-rem));
+  z-index: 10;
+  width: calc(var(--container-one-column) + var(--container-column-gap));
+  margin-left: var(--container-padding);
+  color: #fff9;
+  mix-blend-mode: difference;
+  overflow: hidden;
+}
+.home-service-speed-inner {
+  display: flex;
+  gap: calc(.4 * var(--section-rem));
+  margin-left: calc(.4 * var(--section-rem));
+  transform: translateY(100%);
+  transition: transform .35s;
+}
+.home-service-speed-inner.active { transform: translate(0); }
+.home-service-speed-number { display: flex; height: calc(1.8 * var(--section-rem)); overflow: hidden; }
+
+/* --- screen 1: the yard --------------------------------------------------- */
+/* the first two screens share one grid cell: the yard stage is pinned inside
+   the same scroll run that the road stage measures, so they overlap rather
+   than stacking, and the row is as tall as the longer of the two */
+.home-service-first-screen  { position: relative; z-index: 2; grid-area: 1 / 1 / 2 / -1; }
+.home-service-stick-wrap    { position: relative; color: var(--content-main); }
+.home-service-empty-block   { height: 100vh; }
+/* --story is the scroll length of the pickup story, in vh (street-story.js reads it); the pinned stage
+   stays 150vh longer for the drive, and everything after it follows */
+/* shorter screens get more vh of scroll, so the story is never over in a flick */
+.home-service { --story: 250; --land: min(calc(10 * var(--section-rem)), 9.25926vmin); }
+@media (max-height: 640px) { .home-service { --story: 300; } }
+@media (max-height: 480px) { .home-service { --story: 380; } }
+.home-service-empty-block.first-screen  { height: calc((var(--story) + 150) * 1vh); }
+.home-service-empty-block.second-screen { height: calc((var(--story) + 590) * 1vh); }
+
+.home-service-stick { position: sticky; bottom: 0; }
+
+.home-service-scene { position: relative; width: 100%; height: 100vh; height: 100dvh; contain: paint; }
+/* --- the street: two pickups, one truck ------------------------------------
+   Everything is placed in metres from the truck's rear edge (--x), standing on
+   the ground line (--y). One metre is 9.02 section-rem, the scale the truck art
+   is drawn at, so a 1.78 m partner is the right size next to the truck. */
+.home-service-street {
+  --m: calc(9.02 * var(--section-rem));
+  --rear: calc(50vw + 9.02 * var(--section-rem));    /* the truck's rear edge */
+  --foot: calc(.5 * var(--m));                       /* the footpath's height: the road edge is the ground line */
+  --mn: var(--m);                                    /* the near scale, kept so the far layer can scale itself from it */
+  position: relative;
+  height: 100%;
+  background-color: var(--m-white);
+  overflow: hidden;
+}
+.home-service-world { position: absolute; inset: 0; pointer-events: none; }
+.home-service-layer { position: absolute; inset: 0; will-change: transform; }
+/* the street behind the pickups: a row of medium-rise shops and offices standing on the footpath, a little hazier than
+   what is in front of them */
+.home-service-footpath {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: var(--foot);
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, #c7c8cc 0, #c7c8cc 1px, transparent 1px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,.07) 0 1px, transparent 1px calc(1.2 * var(--m))),
+    #dedfe2;
+  box-shadow: inset 0 calc(-.06 * var(--m)) 0 #cfd0d4;
+}
+/* the far layer is drawn at its own scale: street-story.js sets --far-scale so the buildings fill the screen
+   whatever its shape (shrunk on wide and short screens, grown on tall ones) */
+.home-service-layer.is-far { bottom: var(--foot); opacity: .93; --m: calc(var(--mn) * var(--far-scale, 1)); }
+/* the partner is the truck's driver, so he lives on the truck's own layers (they sit on the truck plate, in the
+   same metre scale; the rear edge is 46.68% of the plate in from its left):
+   - the seat sits UNDER the plate, whose cab window is see-through, so only the window shows him;
+   - the crew is cut off at the truck's rear edge, so he comes out from behind the truck and goes back behind it
+     (and a parcel he pushes in disappears into the box), instead of walking across the truck's side. */
+.home-service-truck-seat,
+.home-service-truck-crew {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  --m: calc(9.02 * var(--section-rem));
+  --rear: 46.68%;
+}
+.home-service-truck-seat { z-index: 1; }
+.home-service-truck-crew { z-index: 4; clip-path: inset(-60% 53.32% -10% -600%); }
+.home-service-partner { position: absolute; left: var(--rear); bottom: 0; width: 0; height: calc(1.8 * var(--m)); will-change: transform; }
+
+.st {
+  position: absolute;
+  bottom: calc(var(--y, 0) * var(--m));
+  left: calc(var(--rear) + (var(--x) - var(--cx, 0) * var(--h) * var(--ar)) * var(--m));
+  height: calc(var(--h) * var(--m));
+  aspect-ratio: var(--ar);
+}
+.st-img { display: block; width: 100%; height: 100%; max-width: none; }
+/* a figure that faces left is the same cut-out mirrored about its torso */
+.st.flip .st-img { transform: scaleX(-1); transform-origin: calc(var(--cx, .5) * 100%) 50%; }
+.home-service-partner .st { left: calc((0 - var(--cx, 0) * var(--h) * var(--ar)) * var(--m)); }
+
+/* what the animation shows, for screen readers */
+.home-service-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* on-screen readouts */
+.home-service-hud {
+  position: absolute;
+  top: max(calc(16 * var(--section-rem)), env(safe-area-inset-top));
+  left: max(var(--container-padding), env(safe-area-inset-left));
+  z-index: 5;
+  display: flex;
+  flex-flow: column;
+  align-items: flex-start;
+  gap: calc(.8 * var(--section-rem));
+  pointer-events: none;
+}
+.home-service-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(1 * var(--section-rem));
+  padding: calc(.9 * var(--section-rem)) calc(1.6 * var(--section-rem));
+  border-radius: 999px;
+  background: var(--m-black);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+}
+.home-service-chip .dot { width: calc(.8 * var(--section-rem)); height: calc(.8 * var(--section-rem)); border-radius: 50%; background: #00c853; }
+.home-service-chip.is-stop { display: grid; grid-template-columns: auto auto; }
+.home-service-chip.is-stop .stop-1, .home-service-chip.is-stop .stop-2 { grid-area: 1 / 2; }
+.home-service-chip.is-stop .stop-2 { opacity: 0; }
+.home-service-chip.is-stop { overflow: hidden; }
+/* the parcel counter rolls like an odometer: the old digit leaves upwards, the new one rises in */
+.home-service-count { display: inline-grid; min-width: 1ch; overflow: hidden; padding-block: .12em; color: #00c853; font-weight: 600; }
+.home-service-count b { grid-area: 1 / 1; font-weight: inherit; opacity: 0; will-change: transform; }
+.home-service-count b:first-child { opacity: 1; }
+
+/* route progress: three stops, a line that fills as the truck gets there */
+.home-service-route {
+  position: absolute;
+  top: max(calc(16 * var(--section-rem)), env(safe-area-inset-top));
+  right: max(var(--container-padding), env(safe-area-inset-right));
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(1.4 * var(--section-rem));
+  padding: calc(1.1 * var(--section-rem)) calc(1.8 * var(--section-rem));
+  border-radius: 999px;
+  background: var(--m-black);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+.home-service-route .rt-track { position: relative; width: calc(10 * var(--section-rem)); height: 2px; border-radius: 2px; background: rgba(255,255,255,.28); }
+.home-service-route .rt-fill { position: absolute; inset: 0; border-radius: 2px; background: #00c853; transform: scaleX(0); transform-origin: 0 50%; }
+.home-service-route .rt-node {
+  position: absolute; top: 50%;
+  width: calc(.9 * var(--section-rem)); height: calc(.9 * var(--section-rem));
+  margin: calc(-.45 * var(--section-rem)) 0 0 calc(-.45 * var(--section-rem));
+  border-radius: 50%; background: var(--m-black); border: 2px solid rgba(255,255,255,.5);
+}
+.home-service-route .rt-node.n1 { left: 0; } .home-service-route .rt-node.n2 { left: 50%; } .home-service-route .rt-node.n3 { left: 100%; }
+
+/* "+1 parcel" pops up over the truck's rear each time something is loaded */
+.home-service-plus {
+  position: absolute;
+  left: calc(var(--rear) - 1.5 * var(--m));
+  bottom: calc(3.1 * var(--m));
+  z-index: 5;
+  padding: calc(.7 * var(--section-rem)) calc(1.4 * var(--section-rem));
+  border-radius: 999px;
+  background: #00c853;
+  color: #fff;
+  font: 600 calc(1.3 * var(--section-rem)) / 1.2 var(--font-mono, ui-monospace, monospace);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 calc(.6 * var(--section-rem)) calc(1.6 * var(--section-rem)) rgba(0, 200, 83, .35);
+}
+.home-service-plus b { font-weight: 700; }
+
+/* wind streaks across the street while the truck pulls away */
+.home-service-streaks { position: absolute; inset: 0 0 var(--foot) 0; pointer-events: none; opacity: 0; }
+.home-service-streaks i {
+  position: absolute;
+  left: calc(var(--rear) + var(--x) * var(--m));
+  bottom: calc(var(--y) * var(--m));
+  width: calc(var(--w) * var(--m));
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to right, transparent, rgba(22, 26, 36, .22) 45%, transparent);
+  will-change: transform;
+}
+
+/* contact shadows ground every figure and prop on the footpath */
+.st.life::before, .st.cust::before, .st.seller::before, .home-service-partner::before {
+  content: '';
+  position: absolute;
+  left: 4%; right: 4%;
+  bottom: calc(-.05 * var(--m));
+  height: calc(.17 * var(--m));
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(12, 14, 22, .34), rgba(12, 14, 22, 0));
+  pointer-events: none;
+}
+.st.life .st-img, .st.cust .st-img, .st.seller .st-img { position: relative; }
+.home-service-partner::before { left: calc(-.42 * var(--m)); right: auto; width: calc(.84 * var(--m)); bottom: calc(-.05 * var(--m)); }
+
+.home-service-land { width: 100%; height: var(--land); background-color: var(--m-black); }
+
+/* --- screen 2: the road --------------------------------------------------- */
+.home-service-second-screen { position: relative; z-index: 3; grid-area: 1 / 1 / 2 / -1; }
+.home-service-stick.second-screen {
+  position: sticky;
+  top: calc(60vh - min(calc(10 * var(--section-rem)), 9.25926vmin));
+  bottom: auto;
+  /* Natural position 60vh down the cell, so its wheels sit on the same ground line as the
+     street stage while both scroll into view; it then pins at the same moment the stage does.
+     (The run below is 60vh shorter to compensate, so the page length is unchanged.) */
+  margin-top: 60vh;
+}
+.home-service-front {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(1px, 1fr);
+  height: 40vh;
+}
+/* the truck and the wordmark overlap in one cell, both resting on the road */
+.home-service-front > * { grid-area: 1 / 1 / 2 / 2; }
+
+.home-service-truck {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  margin-bottom: calc(-.2 * var(--section-rem));
+}
+.home-service-truck-inner {
+  position: relative;
+  width: calc(120.2 * var(--section-rem));
+  transform: translate(calc(50vw - 52.7%));
+}
+.home-service-truck-full { position: relative; opacity: 0; pointer-events: none; }
+.home-service-truck-car-wrap {
+  position: absolute;
+  top: 0;
+  left: 13.5%;
+  display: grid;
+  grid-template-columns: minmax(1px, 1fr);
+  width: 100%;
+  height: 100%;
+}
+/* the three plates share one cell so they read as one vehicle */
+.home-service-truck-car-wrap > * { grid-area: 1 / 1 / 2 / 2; }
+.home-service-truck-car  { position: relative; z-index: 2; width: 100%; height: 100%; }
+.home-service-truck-wheel { position: relative; z-index: 3; width: 100%; height: 100%; overflow: hidden; }
+.home-service-truck-wheel-i {
+  position: absolute;
+  bottom: 0;
+  width: 4.43%;
+  aspect-ratio: 1;
+  filter: blur(.5px) brightness(98%);
+}
+/* two axles: front under the cab, rear under the cargo box (percent of the 2664 px plate) */
+.home-service-truck-wheel-i.wheel-1 { right: 27.62%; }
+.home-service-truck-wheel-i.wheel-2 { right: 44.55%; }
+
+/* the canvas the truck flip is painted into, over the layered side view */
+.home-service-truck-sq {
+  position: absolute;
+  bottom: -9%;
+  left: 11%;
+  z-index: 3;
+  width: 100%;
+  aspect-ratio: 2880 / 809;
+  opacity: 0;
+  transform: scale(1.0435);
+  transform-origin: 0%;
+}
+
+/* the oversized ghost wordmark that slides past behind the truck */
+.home-service-label {
+  width: max-content;
+  height: min(calc(30 * var(--section-rem)), 28vmin);
+  margin-bottom: 1vmin;
+  align-self: end;
+  opacity: 0;
+  font-family: var(--font-head);
+  color: #11111114;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translate(100vw);
+}
+.home-service-label img,
+.home-service-label svg { display: block; height: 100%; width: auto; max-width: none; }
+
+/* the black services panel that scrolls horizontally past the truck */
+.home-service-main {
+  --road-height: 0px;
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: max-content;
+  min-height: 60vh;
+  padding-top: min(calc(10 * var(--section-rem)), 9.25926vmin);
+  padding-bottom: min(calc(4.2 * var(--section-rem)), 3.76007vmin);
+  background-color: var(--bg-main);
+  color: var(--content-main);
+  transform-origin: 0 -20vh;
+}
+.home-service-main-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  column-gap: calc(56.2 * var(--section-rem));
+  opacity: 0;
+  transform: translateX(100vw);
+  margin-bottom: min(calc(7.8 * var(--section-rem)), 6.98299vmin);
+}
+.home-service-text-wrap {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(1px, 1fr));
+  align-items: end;
+  column-gap: var(--container-column-gap);
+  width: 100vw;
+  padding-inline: var(--container-padding);
+}
+.home-service-title { grid-column: 2 / 10; }
+.home-service-sub   { grid-column: 12 / 16; color: var(--content-sub); }
+
+.home-service-cms  { transform-origin: 50% 0; }
+.home-service-list { display: flex; justify-content: flex-start; align-items: flex-start; }
+.home-service-item {
+  display: flex;
+  flex: none;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: calc(42 * var(--section-rem));
+  padding-left: calc(4 * var(--section-rem));
+  border-left: var(--border-size) solid var(--border-light);
+}
+.home-service-item-ic { display: flex; justify-content: center; align-items: center; width: calc(6.4 * var(--section-rem)); height: calc(6.4 * var(--section-rem)); margin-bottom: calc(2.4 * var(--section-rem)); }
+.home-service-item-ic img { width: 100%; height: 100%; object-fit: contain; }
+.home-service-item-title { margin-bottom: calc(2 * var(--section-rem)); }
+.home-service-item-desc { max-width: calc(30.7 * var(--section-rem)); color: var(--content-soft); }
+
+.home-service-btn-wrap {
+  position: absolute;
+  bottom: min(calc(8 * var(--section-rem)), 7.4vmin);
+  left: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+}
+.home-service-btn { cursor: pointer; text-decoration: none; color: inherit; }
+
+/* road strips above and below the black panel */
+.home-service-main-road { position: absolute; left: 0; width: 300vw; height: var(--road-height); }
+.home-service-main-road.top { bottom: 100%; margin-bottom: -1px; background-color: var(--m-black); }
+.home-service-main-road.bot { bottom: 0; z-index: 2; margin-bottom: -1px; background-color: var(--content-main); }
+
+.home-service-road-big {
+  position: absolute;
+  left: 100%;
+  top: calc((min(calc(10 * var(--section-rem)), 9.25926vmin) + var(--road-height)) * -1);
+  width: 420vw;
+  transform: translateX(-100vw);
+  height: 60vh;
+  pointer-events: none;
+}
+.home-service-road-big-img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--m-black);
+  background-image: url('/assets/websiteimages/05-journey/road/road-line-big.svg');
+  background-position: 0%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  transform-origin: 50% 0;
+}
+
+/* --- screen 3: overhead --------------------------------------------------- */
+.home-service-third-screen {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-area: 2 / 1 / 3 / -1;
+  margin-top: -200vh;
+  pointer-events: none;
+}
+
+/* the overhead truck spans both rows, so it can drive from the curve down
+   past the three cards without leaving its cell */
+.home-service-new-truck-wrap {
+  position: relative;
+  z-index: 2;
+  grid-area: 1 / 1 / 3 / -1;
+  width: calc(98.5 * var(--section-rem));
+  margin-bottom: -100vh;
+  opacity: 0;
+}
+.home-service-new-truck-stick {
+  position: sticky;
+  top: calc(50vh - calc(32.5 * var(--section-rem)));
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  width: calc(65 * var(--section-rem));
+  margin-left: auto;
+  aspect-ratio: 1;
+}
+.home-service-new-truck-rot {
+  position: absolute;
+  width: calc(1 * var(--section-rem)); height: calc(1 * var(--section-rem));
+  margin-bottom: calc(-1 * var(--section-rem)); margin-left: calc(-1 * var(--section-rem));
+  aspect-ratio: 1;
+  transform: rotate(0);
+}
+.home-service-new-truck {
+  position: absolute;
+  top: calc(calc(-32.5 * var(--section-rem)) - 50%);
+  z-index: 2;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: calc(78.2675 * var(--section-rem));
+  aspect-ratio: 2880 / 809;
+  transform: translateY(-50%);
+  transform-origin: 0 0;
+}
+.home-service-new-truck-inner { display: flex; justify-content: center; align-items: center; width: 100%; height: 100%; }
+.home-service-new-truck-inner { transform-origin: 70%; }
+
+/* the curve the truck takes */
+.home-service-road-main { position: relative; z-index: 1; grid-area: 1 / 1 / 2 / -1; }
+.home-service-road-wrap { position: sticky; top: 20vh; grid-area: 1 / 1 / 2 / -1; justify-self: start; width: max-content; }
+.home-service-road-stick { height: 100vh; grid-area: 2 / 2 / 3 / -2; }
+.home-service-road {
+  --scale-factor: 1;
+  position: relative;
+  width: calc(78.4 * var(--section-rem));
+  background-color: var(--bg-main);
+  transform: scale(var(--scale-factor));
+  transform-origin: left top;
+}
+.home-service-road-inner { position: relative; z-index: 2; width: 100%; margin-left: calc(32.9 * var(--section-rem)); }
+.home-service-road-center { flex: none; width: 100%; opacity: 1; }
+.home-service-road-center svg { display: block; width: 100%; height: auto; }
+.home-service-road-left-wrap {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100vw;
+  height: calc(24.4 * var(--section-rem));
+  background-color: var(--m-white);
+}
+.home-service-road-left { position: relative; display: flex; flex: none; justify-content: center; align-items: center; width: calc(33 * var(--section-rem)); height: 100%; background-color: #0c0c0c; }
+.home-service-road-left-white { flex: 1; height: 100%; margin-top: -2px; background-color: var(--bg-main); }
+.home-service-road-right {
+  position: absolute;
+  top: calc(23.85 * var(--section-rem));
+  left: calc(100% + calc(32.9 * var(--section-rem)));
+  z-index: 2;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: calc(24.48 * var(--section-rem));
+  margin-left: -1px;
+  background-color: #0c0c0c;
+  transform: scaleX(-1);
+}
+.home-service-road-bot {
+  position: absolute;
+  top: calc(66.3 * var(--section-rem));
+  left: 52.5665%;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: calc(24.4 * var(--section-rem));
+  height: 400%;
+  margin-top: calc(-.1 * var(--section-rem));
+  margin-left: calc(32.9 * var(--section-rem));
+  background-color: #0c0c0c;
+}
+.home-service-road-hor-line {
+  width: 100%; height: 100%;
+  background-image: url('/assets/websiteimages/05-journey/road/road-line-horizontal.svg');
+  background-position: 100%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+.home-service-road-ver-line {
+  width: 100%; height: 100%;
+  background-image: url('/assets/websiteimages/05-journey/road/road-line-vertical.svg');
+  background-position: 50% 0;
+  background-repeat: repeat-y;
+  background-size: 100%;
+}
+
+/* --- the three "why it matters" cards riding alongside the overhead truck -- */
+.home-service-sub-content { grid-area: 2 / 1 / 3 / -1; margin-top: -100vh; padding-top: calc(10vh + calc(54.3 * var(--section-rem))); }
+.home-service-stick-wrap.third-screen { grid-area: 1 / 2 / 2 / 8; display: flex; flex-flow: column; justify-content: flex-end; height: 100%; }
+.home-service-stick.third-screen {
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  height: 100vh;
+  margin-top: calc(calc(31.2 * var(--section-rem)) - min(calc(16 * var(--section-rem)), 14.5455vmin));
+  padding-top: min(calc(16 * var(--section-rem)), 14.5455vmin);
+  padding-bottom: min(calc(9.5 * var(--section-rem)), 8.63636vmin);
+}
+.home-service-title.sub { width: auto; pointer-events: auto; }
+.home-service-desc { width: calc(var(--container-one-column) * 4 + var(--container-column-gap) * 3); }
+.home-service-desc.sub { width: auto; }
+
+.home-service-sub-wrap { grid-area: 1 / 12 / 2 / -2; margin-top: 75vh; pointer-events: auto; }
+.home-service-sub-list {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  align-items: stretch;
+  max-width: calc(34.8 * var(--section-rem));
+  height: 150vh;
+  row-gap: calc(10 * var(--section-rem));
+  padding-bottom: min(calc(9.5 * var(--section-rem)), 8.63636vmin);
+}
+.home-service-sub-item {
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-bottom: calc(10 * var(--section-rem));
+  border-bottom: var(--border-size) solid var(--border-light);
+}
+.home-service-sub-ic { flex: none; width: calc(6.4 * var(--section-rem)); height: calc(6.4 * var(--section-rem)); margin-bottom: calc(2 * var(--section-rem)); }
+.home-service-sub-ic img { width: 100%; height: 100%; object-fit: contain; }
+.home-service-sub-title { margin-bottom: calc(2 * var(--section-rem)); }
+
+@media (max-width: 991px) {
+  .home-service-truck-inner { width: calc(69 * var(--section-rem)); }
+  .home-service-label { height: 28vh; }
+  .home-service-stick.third-screen { row-gap: calc(3.2 * var(--section-rem)); justify-content: flex-end; align-items: stretch; margin-top: -80%; }
+  .home-service-main-inner { column-gap: calc(39.6 * var(--section-rem)); row-gap: calc(7.2 * var(--section-rem)); }
+  .home-service-text-wrap { display: flex; justify-content: space-between; }
+  .home-service-title { width: calc(var(--container-one-column) * 5 + var(--container-column-gap) * 3); }
+  .home-service-sub { width: calc(var(--container-one-column) * 3 + var(--container-column-gap) * 3); }
+  .home-service-item { width: calc(50 * var(--section-rem)); padding-left: calc(6 * var(--section-rem)); }
+  .home-service-road { width: calc(55.367 * var(--section-rem)); }
+  .home-service-road-bot { width: calc(17.23 * var(--section-rem)); height: 430%; margin-left: calc(11.75 * var(--section-rem)); top: calc(46.8 * var(--section-rem)); }
+  .home-service-sub-list { height: 100vh; }
+  .home-service-street {
+    --m: calc(5.18 * var(--section-rem));
+    --rear: calc(50vw + 5.17 * var(--section-rem));
+  }
+  .home-service-truck-seat, .home-service-truck-crew { --m: calc(5.18 * var(--section-rem)); }
+  .home-service-road-inner { margin-left: calc(11.7 * var(--section-rem)); }
+  .home-service-road-right { height: calc(17.23 * var(--section-rem)); top: calc(16.91 * var(--section-rem)); left: calc(100% + calc(11.7 * var(--section-rem))); }
+  .home-service-road-left { width: calc(11.8 * var(--section-rem)); }
+  .home-service-road-left-wrap { height: calc(17.23 * var(--section-rem)); }
+  .home-service-new-truck { width: calc(74.8816 * var(--section-rem)); top: calc(calc(-28 * var(--section-rem)) - 50%); }
+  .home-service-new-truck-wrap { width: calc(58 * var(--section-rem)); }
+  .home-service-new-truck-stick { width: calc(56 * var(--section-rem)); top: calc(50vh - calc(28 * var(--section-rem))); }
+  .home-service-stick-wrap.third-screen { grid-column: 2 / 8; }
+  .home-service-sub-wrap { grid-column: 9 / -2; }
+}
+
+/* --- mobile: the stage becomes a plain stacked list ----------------------- */
+.home-service-mb { display: none; }
+@media (max-width: 767px) {
+  .home-service { display: none; }
+  /* the icon set is drawn white for the dark panel, so the mobile list keeps
+     the same dark surface rather than the page's white one */
+  .home-service-mb {
+    display: block;
+    position: relative;
+    z-index: 2;
+    padding-block: calc(6.4 * var(--section-rem));
+    background-color: var(--bg-main);
+    color: var(--content-main);
+  }
+  .home-service-mb .home-service-list { display: flex; flex-flow: column; row-gap: calc(3.2 * var(--section-rem)); }
+  .home-service-mb .home-service-item {
+    width: auto;
+    padding-left: 0;
+    padding-bottom: calc(3.2 * var(--section-rem));
+    border-left-style: none;
+    border-bottom: var(--border-size) solid var(--border-light);
+  }
+  .home-service-mb .home-service-item-ic { width: calc(4 * var(--section-rem)); height: calc(4 * var(--section-rem)); margin-bottom: calc(3.2 * var(--section-rem)); }
+  .home-service-mb .home-service-title,
+  .home-service-mb .home-service-sub,
+  .home-service-mb .home-service-desc { width: auto; }
+}
+
+.home-service-sub-item:last-child { border-bottom: none; padding-bottom: 0; }
+.home-service-road-big::before, .home-service-road-big::after {
+  content: ''; position: absolute; width: 100%; height: 30vh; left: 0;
+  z-index: 1; opacity: var(--bright-fade, 0); pointer-events: none;
+}
+.home-service-road-big::before { top: -1px; background: linear-gradient(180deg, rgba(12,12,12,.2), transparent); }
+.home-service-road-big::after { bottom: -1px; background: linear-gradient(0deg, rgba(255,255,255,.05), transparent); }
+
+/* --- short screens (landscape phones, laptops with lots of browser chrome): the readouts shrink and tuck in ---- */
+@media (max-height: 560px) and (min-width: 768px) {
+  .home-service-hud { top: calc(var(--land) + max(10px, env(safe-area-inset-top))); gap: 6px; }
+  .home-service-route { top: calc(var(--land) + max(10px, env(safe-area-inset-top))); }
+  .home-service-chip, .home-service-route { padding: 6px 12px; }
+  .home-service-chip .txt, .home-service-route .txt { font-size: 10px; }
+  .home-service-count { font-size: 10px; }
+  .home-service-plus { font-size: 11px; padding: 4px 10px; }
+}
+/* the animation is decoration; people who ask for less motion get the finished picture of each beat */
+@media (prefers-reduced-motion: reduce) {
+  .home-service-streaks { display: none; }
+}
+
+/* ===========================================================================
+   Connext content on the approved stage
+   - the services panel cards carry a status tag (available now / coming soon)
+   - the overhead road holds two blocks: "How Connext works" (three steps the
+     truck drives past) and "Why Connext" (row 2, where the truck parks)
+   =========================================================================== */
+.cl-green { color: #22c55e; }
+
+.home-service-item-tag { margin-bottom: calc(1.2 * var(--section-rem)); color: #4ade80; }
+.home-service-item.is-soon .home-service-item-tag { color: var(--content-note); }
+
+.home-service-eyebrow { margin-bottom: calc(2.4 * var(--section-rem)); color: #16a34a; }
+.home-service-sub-tag { margin-bottom: calc(1.2 * var(--section-rem)); color: #16a34a; }
+
+/* the second block sits in the next grid row, so its heading pins only once
+   the steps have gone by */
+.home-service-stick-wrap.third-screen.is-why,
+.home-service-sub-wrap.is-why { grid-row: 2 / 3; }
+
+/* the vertical road now runs past both blocks */
+.home-service-road-bot { height: 760%; }
+@media (max-width: 991px) { .home-service-road-bot { height: 820%; } }
+
+/* icon sets: the white ones go dark on the light road (desktop); on the
+   dark mobile panel it is the other way round */
+.home-service .home-service-sub-ic.is-invert img { filter: invert(1); }
+.home-service-mb .home-service-sub-ic:not(.is-invert) img { filter: invert(1); }
+.home-service-mb .home-service-eyebrow,
+.home-service-mb .home-service-sub-tag { color: #4ade80; }
+.home-service-mb .home-service-mb-text-wrap + .home-service-mb-text-wrap { margin-top: calc(9.6 * var(--service-rem, var(--section-rem))); }
+.home-service-mb .home-service-sub-list { display: flex; flex-flow: column; row-gap: calc(3.2 * var(--section-rem)); }
+.home-service-mb .home-service-sub-item { padding-bottom: calc(3.2 * var(--section-rem)); }
+.home-service-mb .home-service-sub-ic { width: calc(4 * var(--section-rem)); height: calc(4 * var(--section-rem)); }
+
+/* the end of the road: a soft fade into the page below the parked truck.
+   It paints over the road (same layer, later in the grid) but under the
+   copy, which is lifted one layer above it. */
+.home-service-road-end {
+  position: relative; z-index: 1;
+  grid-area: 2 / 1 / 3 / -1;
+  align-self: end;
+  height: 34vh;
+  background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--bg-main) 62%);
+  pointer-events: none;
+}
+.home-service-sub-content { position: relative; z-index: 1; }
+/* room below the last card for the parked truck and the end of the road */
+.home-service-sub-wrap.is-why { padding-bottom: 40vh; }
+
+/* mobile list: the copy sits on the dark panel, and the desktop road spacing
+   (75vh drop, 150vh list) does not apply */
+@media (max-width: 767px) {
+  .home-service-mb .home-service-item-title,
+  .home-service-mb .home-service-item-title h3,
+  .home-service-mb .home-service-sub-title,
+  .home-service-mb .home-service-sub-title h3 { color: #fff; }
+  .home-service-mb .home-service-item-desc,
+  .home-service-mb .home-service-sub-desc { color: rgb(255 255 255 / .66); }
+  .home-service-mb .home-service-sub-wrap { margin-top: calc(4.8 * var(--section-rem)); padding-bottom: 0; }
+  .home-service-mb .home-service-sub-list { height: auto; max-width: none; padding-bottom: 0; }
+  .home-service-mb .home-service-sub-item { border-bottom-color: rgb(255 255 255 / .1); }
+  .home-service-mb .home-service-item-tag { margin-bottom: calc(1.6 * var(--section-rem)); }
+}
+
+/* tablets: the road runs down the middle of the screen, so the cards move
+   to the right of it rather than sharing its columns */
+@media (min-width: 768px) and (max-width: 991px) {
+  .home-service-sub-wrap { grid-column: 1 / -1; justify-self: end; width: 34vw; margin-right: 4vw; }
+}

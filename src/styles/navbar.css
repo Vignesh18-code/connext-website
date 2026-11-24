@@ -1,0 +1,278 @@
+/* ============================================================================
+   NAVBAR — ported from CONNEXT/src/components/site-navbar.tsx.
+   A dark glass bar hung off the top edge with a flared, concave top (pure-CSS
+   clip-path), centred and capped at 1024px. Sizes are in px, not rem, so the
+   bar keeps the source's proportions instead of riding the fluid rem root.
+   Breakpoints follow the source's Tailwind ones: sm = 640px, lg = 1024px.
+   ========================================================================== */
+
+.site-nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  padding: 0;
+  pointer-events: none;
+  font-family: 'Manrope', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  transition: opacity .7s ease, transform .7s cubic-bezier(.2, .7, .2, 1);
+}
+/* held back until the loader irises open */
+.site-nav.on-loader { opacity: 0; transform: translateY(-1.4vh); }
+
+.site-nav-inner {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  pointer-events: auto;
+}
+
+/* --- the glass bar -------------------------------------------------------- */
+.site-nav-bar {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 0 0 20px 20px;
+  overflow: hidden;            /* trims the border stroke to the rounded corners */
+  background: rgb(9 9 11 / .85);
+  color: #fff;
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+}
+/* the border: a 2px stroke drawn exactly on the bar's edge; the outer half is
+   clipped by the bar (clip-path / rounded overflow), leaving a crisp 1px
+   green gradient line that follows the flared shape */
+.site-nav-border {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.site-nav-border path {
+  fill: none;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.site-nav-sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgb(255 255 255 / .07), transparent, rgb(0 0 0 / .2));
+}
+
+/* --- logo ----------------------------------------------------------------- */
+.site-nav-logo { position: relative; display: flex; align-items: center; flex-shrink: 0; }
+.site-nav-logo img { display: block; width: auto; height: 20px; transition: transform .3s; }
+.site-nav-logo:hover img { transform: scale(1.03); }
+
+/* --- desktop links -------------------------------------------------------- */
+.site-nav-links { position: relative; display: none; align-items: center; gap: 4px; }
+.site-nav-link {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  color: #d4d4d8;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  text-decoration: none;
+  transition: color .15s, background-color .15s;
+}
+.site-nav-link:hover { color: #fff; background: rgb(255 255 255 / .1); }
+
+.site-nav-actions { position: relative; display: none; align-items: center; gap: 16px; flex-shrink: 0; }
+.site-nav-contact {
+  color: #d4d4d8;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-decoration: none;
+  transition: color .15s;
+}
+.site-nav-contact:hover { color: #fff; }
+
+.site-nav-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 8px 18px;
+  border: 0;
+  border-radius: 9999px;
+  background: #22c55e;
+  color: #09090b;
+  font: 700 16px/24px 'Manrope', system-ui, sans-serif;
+  box-shadow: 0 10px 15px -3px rgb(34 197 94 / .2), 0 4px 6px -4px rgb(34 197 94 / .2);
+  cursor: pointer;
+  transition: background-color .15s;
+}
+.site-nav-download:hover { background: #4ade80; }
+.site-nav-download svg { width: 16px; height: 16px; }
+
+/* --- mobile / tablet toggle ---------------------------------------------- */
+.site-nav-toggle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-right: -4px;
+  padding: 0;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color .15s;
+}
+.site-nav-toggle:hover { background: rgb(255 255 255 / .1); }
+.site-nav-toggle svg {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  transition: opacity .18s, transform .18s;
+}
+.site-nav-toggle .icon-close { opacity: 0; transform: rotate(-90deg) scale(.6); }
+.site-nav.is-open .site-nav-toggle .icon-menu { opacity: 0; transform: rotate(90deg) scale(.6); }
+.site-nav.is-open .site-nav-toggle .icon-close { opacity: 1; transform: none; }
+
+/* --- mobile / tablet panel ----------------------------------------------- */
+.site-nav-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  transform-origin: top;
+  opacity: 0;
+  transform: translateY(-8px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .25s, transform .3s cubic-bezier(.2, .9, .3, 1), visibility 0s .3s;
+}
+.site-nav.is-open .site-nav-panel {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity .25s, transform .3s cubic-bezier(.2, .9, .3, 1), visibility 0s;
+}
+.site-nav-panel-card {
+  margin: 8px 8px 0;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / .1);
+  border-radius: 24px;
+  background: rgb(9 9 11 / .8);
+  -webkit-backdrop-filter: blur(40px);
+  backdrop-filter: blur(40px);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / .5);
+}
+.site-nav-panel-body { max-height: calc(100vh - 112px); overflow-y: auto; padding: 10px; }
+.site-nav-panel-link {
+  display: block;
+  padding: 14px 12px;
+  color: #d4d4d8;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  text-decoration: none;
+  transition: color .15s;
+}
+.site-nav-panel-link:hover { color: #fff; }
+.site-nav-panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(255 255 255 / .1);
+}
+.site-nav-panel-contact,
+.site-nav-panel-download {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  border-radius: 9999px;
+  font: 600 18px/28px 'Manrope', system-ui, sans-serif;
+  text-decoration: none;
+  transition: background-color .15s;
+}
+.site-nav-panel-contact { border: 1px solid rgb(255 255 255 / .15); color: #fff; }
+.site-nav-panel-contact:hover { background: rgb(255 255 255 / .1); }
+.site-nav-panel-download {
+  border: 0;
+  background: #22c55e;
+  color: #09090b;
+  font-weight: 700;
+  box-shadow: 0 10px 15px -3px rgb(34 197 94 / .2), 0 4px 6px -4px rgb(34 197 94 / .2);
+  cursor: pointer;
+}
+.site-nav-panel-download:hover { background: #4ade80; }
+.site-nav-panel-download svg { width: 20px; height: 20px; }
+
+/* --- sm (640px+): side gutters + the flared concave top ------------------- */
+@media (min-width: 640px) {
+  .site-nav { padding: 0 48px; }
+  .site-nav-bar {
+    margin: 0 -36px;
+    padding-left: 52px;
+    padding-right: 52px;
+    filter: drop-shadow(0 10px 30px rgb(0 0 0 / .3));
+    /* 36px sideways / 36px deep concave neck (a quarter circle sampled at 20
+       steps) and 20px rounded bottom corners, as in the source */
+    clip-path: polygon(
+      0% 0%, 100% 0%,
+      calc(100% - 2.95px) 0.12px, calc(100% - 5.84px) 0.47px, calc(100% - 8.65px) 1.05px,
+      calc(100% - 11.38px) 1.84px, calc(100% - 14.01px) 2.83px, calc(100% - 16.54px) 4.02px,
+      calc(100% - 18.96px) 5.39px, calc(100% - 21.26px) 6.95px, calc(100% - 23.43px) 8.67px,
+      calc(100% - 25.46px) 10.54px, calc(100% - 27.33px) 12.57px, calc(100% - 29.05px) 14.74px,
+      calc(100% - 30.61px) 17.04px, calc(100% - 31.98px) 19.46px, calc(100% - 33.17px) 21.99px,
+      calc(100% - 34.16px) 24.62px, calc(100% - 34.95px) 27.35px, calc(100% - 35.53px) 30.16px,
+      calc(100% - 35.88px) 33.05px, calc(100% - 36px) 36px,
+      calc(100% - 36px) calc(100% - 20px),
+      calc(100% - 36.38px) calc(100% - 16.1px), calc(100% - 37.52px) calc(100% - 12.35px),
+      calc(100% - 39.37px) calc(100% - 8.89px), calc(100% - 41.86px) calc(100% - 5.86px),
+      calc(100% - 44.89px) calc(100% - 3.37px), calc(100% - 48.35px) calc(100% - 1.52px),
+      calc(100% - 52.1px) calc(100% - 0.38px), calc(100% - 56px) 100%,
+      56px 100%,
+      52.1px calc(100% - 0.38px), 48.35px calc(100% - 1.52px), 44.89px calc(100% - 3.37px),
+      41.86px calc(100% - 5.86px), 39.37px calc(100% - 8.89px), 37.52px calc(100% - 12.35px),
+      36.38px calc(100% - 16.1px), 36px calc(100% - 20px),
+      35.88px 33.05px, 35.53px 30.16px, 34.95px 27.35px, 34.16px 24.62px, 33.17px 21.99px,
+      31.98px 19.46px, 30.61px 17.04px, 29.05px 14.74px, 27.33px 12.57px, 25.46px 10.54px,
+      23.43px 8.67px, 21.26px 6.95px, 18.96px 5.39px, 16.54px 4.02px, 14.01px 2.83px,
+      11.38px 1.84px, 8.65px 1.05px, 5.84px 0.47px, 2.95px 0.12px
+    );
+  }
+  .site-nav-logo img { height: 24px; }
+}
+
+/* --- lg (1024px+): inline links + actions, no toggle ---------------------- */
+@media (min-width: 1024px) {
+  .site-nav-bar { gap: 32px; padding: 12px 68px; }
+  .site-nav-logo img { height: 28px; }
+  .site-nav-links,
+  .site-nav-actions { display: flex; }
+  .site-nav-toggle,
+  .site-nav-panel { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-nav, .site-nav *, .site-nav-panel { transition-duration: .01ms !important; }
+}

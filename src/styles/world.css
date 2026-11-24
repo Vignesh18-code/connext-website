@@ -1,0 +1,62 @@
+/* ============================================================================
+   WORLD — shot 1 of the Connext world.
+   A tall wrapper holds one sticky full-screen stage. While the wrapper scrolls past,
+   the stage stays put and the three.js camera is driven by the scroll progress.
+   ========================================================================== */
+.home-world-wrap,
+.home-streets-wrap {
+  --world-scroll: 420vh;
+  position: relative;
+  z-index: 2;
+  height: var(--world-scroll);
+  background-color: #0b1f24;
+}
+.home-world,
+.home-streets {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #8fb6d6 0%, #cfe0ec 62%, #e8eff4 100%);
+}
+.home-world-canvas,
+.home-streets-canvas,
+.home-world-poster {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.home-world-poster { object-fit: cover; }
+.home-world-canvas,
+.home-streets-canvas { opacity: 0; transition: opacity .9s ease; }
+.home-world-wrap.is-ready .home-world-canvas,
+.home-streets-wrap.is-ready .home-streets-canvas { opacity: 1; }
+.home-world-wrap.is-ready .home-world-poster,
+.home-streets-wrap.is-ready .home-world-poster { opacity: 0; transition: opacity .9s ease .25s; }
+
+/* no WebGL (or it was lost): keep the poster */
+.home-world-wrap.is-fallback .home-world-canvas,
+.home-streets-wrap.is-fallback .home-streets-canvas { display: none; }
+.home-world-wrap.is-fallback .home-world-poster,
+.home-streets-wrap.is-fallback .home-world-poster { opacity: 1; transition: none; }
+
+/* reduced motion: one still frame, no scroll-driven stage */
+.home-world-wrap.is-still,
+.home-streets-wrap.is-still { height: 100vh; height: 100svh; }
+.home-world-wrap.is-still .home-world,
+.home-streets-wrap.is-still .home-streets { position: relative; }
+
+@media (max-width: 767px) {
+  .home-world-wrap,
+  .home-streets-wrap { --world-scroll: 360vh; }
+}
+
+/* ----- the three streets: the map credit ------------------------------------------------------------------------- */
+.home-streets-wrap { --world-scroll: 320vh; }
+.home-streets { background: linear-gradient(180deg, #b6c9d8 0%, #d6dde0 100%); }
+.home-streets-credit { position: absolute; right: 12px; bottom: 8px; z-index: 3; margin: 0; font: 500 11px/1.2 system-ui, sans-serif; color: rgba(2, 39, 48, .75); background: rgba(255, 255, 255, .6); padding: 3px 8px; border-radius: 999px; }
+.home-streets-credit a { color: inherit; text-decoration: underline; }
+@media (max-width: 767px) { .home-streets-wrap { --world-scroll: 280vh; } }

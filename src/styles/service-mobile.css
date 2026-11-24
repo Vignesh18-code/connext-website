@@ -1,0 +1,53 @@
+.home-service-mb{--service-rem:1rem}
+@media(max-width:767px){.home-service-mb{--service-rem:2.5445292621vw}}
+.home-service-mb{display:none}.home-service-mb-empty-block{height:100vh}@media screen and (max-width:767px){.home-service-mb{z-index:2;contain:paint;display:block;position:relative}.home-service-mb-first-screen{position:relative}.home-service-mb-empty-block.second-screen{background-color:var(--bg-main);--bg-main:var(--m-black);--content-main:var(--m-white);--content-note:#ffffff3d;--border-bold:#ffffff52;--bg-sf-2:var(--m-white);--border-highlight:var(--m-white);--_color---secondary:#f50;--m-white:white;--content-soft:#fff9;--bg-sf-1:#1a1a1a;--border-light:#ffffff14;--content-brand:var(--primary);--border-main:#ffffff29;--content-disable:#ffffff29;--content-sub:#ffffffb3;--m-black:#111;--content-black\<deleted\|variable-6e7d8137-8713-9ff4-5cea-f92e6216a872\>:black;--bg-brand:var(--primary);--primary:#22c55e;width:100%;height:200svh;display:none}.home-service-mb-second-screen{z-index:0;padding-right:var(--container-padding);grid-row-gap:calc(9.6 * var(--service-rem));background-color:var(--bg-main);--bg-main:var(--m-black);--content-main:var(--m-white);--content-note:#ffffff3d;--border-bold:#ffffff52;--bg-sf-2:var(--m-white);--border-highlight:var(--m-white);--_color---secondary:#f50;--m-white:white;--content-soft:#fff9;--bg-sf-1:#1a1a1a;--border-light:#ffffff14;--content-brand:var(--primary);--border-main:#ffffff29;--content-disable:#ffffff29;--content-sub:#ffffffb3;--m-black:#111;--content-black\<deleted\|variable-6e7d8137-8713-9ff4-5cea-f92e6216a872\>:black;--bg-brand:var(--primary);--primary:#22c55e;padding-bottom:200svh;padding-left:calc(var(--container-one-column) + var(--container-column-gap) + var(--container-padding));flex-flow:column;display:flex;position:relative}.home-service-mb-title{color:var(--content-main);margin-bottom:calc(4.8 * var(--service-rem));position:relative}.home-service-mb-desc{max-width:calc(25 * var(--service-rem));color:var(--content-sub);margin-bottom:calc(4 * var(--service-rem))}.home-service-mb-truck-wrap{z-index:1;margin-top:-100vh;position:relative}.home-service-mb-truck-stick{aspect-ratio:76/321;grid-template-rows:auto;grid-template-columns:minmax(1px,1fr);grid-auto-columns:1fr;height:calc(32.1 * var(--service-rem));margin-bottom:-100svh;display:grid;position:sticky;top:0;left:0}.home-service-mb-truck{width:100%;height:100%}.home-service-mb-road{opacity:0;pointer-events:none;justify-content:space-between;display:flex;position:absolute;inset:0% calc(-2 * var(--service-rem)) -100svh}.home-service-mb-road-line{opacity:.7;background-image:url(https://cdn.prod.website-files.com/6a44eec1ed1af2c4c403df6b/6a44eec1ed1af2c4c403e97d_road-line-mb.png);background-position:0 0;background-repeat:repeat-y;background-size:100%;width:calc(.4 * var(--service-rem));height:100%}}@media screen and (max-width:767px){#w-node-_70597fe7-5c5d-c94f-0970-56a35e13e9f7-c403df38{grid-area:1/1/2/-1}#w-node-_50259f4a-cb3e-c7ee-49a7-e85b42e5a87c-c403df38{grid-area:2/1/3/-1}#w-node-_2574e342-02b7-4f06-7758-1ab215e977e2-c403df38{grid-area:3/1/4/-1}#w-node-_6d88ba41-4dbc-04b3-7f35-b7dfaa3a364c-c403df38{grid-area:1/2/4/-2}#w-node-_0c8dfb70-b162-ebe1-0220-8072e6085513-c403df38,#w-node-_07e47ad5-6f31-dc70-a3a5-25a429d680a7-c403df38{grid-area:1/1/2/2}}
+@media(max-width:767px){.home-service-mb{padding:0;background:#fff;color:#111}.home-service-mb .svg{display:block;width:100%}.home-service-mb .w-dyn-items{list-style:none}.home-service-mb .home-service-list{gap:0}.home-service-mb .home-service-item{padding-bottom:0;border-bottom:0}.home-service-mb .home-service-item-title h3 br{display:none}}
+
+@media(max-width:767px){
+.home-service-mb .heading.h2{font-size:calc(3.6 * var(--service-rem));line-height:1.05}
+.home-service-mb .heading.h6{font-size:calc(1.6 * var(--service-rem));line-height:1.2}
+.home-service-mb .txt.fs-14,.home-service-mb .txt.fs-14-mb{font-size:calc(1.4 * var(--service-rem));line-height:1.3}
+.home-service-mb > .container{--container-padding:calc(2 * var(--service-rem));--container-column-gap:calc(1.6 * var(--service-rem));padding-inline:var(--container-padding)}
+}
+@media (max-width: 767px) {
+  /* the parcel street: a full-bleed pinned stage, --story-mb screens of scroll long.
+     One metre (--mm) is 7.2vw on a portrait phone; on a short, wide screen it follows the height instead, so a phone turned
+     on its side gets a smaller street, not a cropped one. The truck picture is 13.32 m wide and sits centred. */
+  .home-service-mb-street-run { --story-mb: 290; position: relative; height: calc(100svh + var(--story-mb) * 1svh); }
+  .home-service-mb-street-stick {
+    --mm: min(7.2vw, 11.5dvh);
+    --ground: clamp(52px, 24dvh, 240px);                       /* the road */
+    --plate: calc(13.32 * var(--mm));                          /* the truck picture */
+    --plate-left: calc((100vw - var(--plate)) / 2);
+    position: sticky; top: 0; z-index: 3; display: flex; flex-flow: column; height: 100svh; height: 100dvh; overflow: hidden; background: #fff;
+  }
+  /* the truck's rear edge is 46.68% along its picture, so the shop and the partner have room to its left */
+  .home-service-mb .home-service-street { --m: var(--mm); --rear: calc(var(--plate-left) + .4668 * var(--plate)); flex: 1 1 auto; min-height: 0; }
+  .home-service-mb-ground { flex: none; height: var(--ground); background: #111; }
+  .home-service-mb .home-service-hud { top: max(calc(7 * var(--service-rem)), calc(env(safe-area-inset-top) + 8px)); left: max(calc(2 * var(--service-rem)), env(safe-area-inset-left)); }
+  .home-service-mb .home-service-route { top: max(calc(7 * var(--service-rem)), calc(env(safe-area-inset-top) + 8px)); right: max(calc(2 * var(--service-rem)), env(safe-area-inset-right)); }
+  .home-service-mb-truck-side { position: absolute; left: var(--plate-left); bottom: var(--ground); z-index: 4; width: var(--plate); }
+  .mbts { position: relative; width: 100%; aspect-ratio: 2664 / 614; }
+  .mbts-plate { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+  .mbts-plate { z-index: 1; }
+  /* the driver: seated behind the cab window (under the plate) and out on the street (over it); see service.css */
+  .mbts .home-service-truck-seat, .mbts .home-service-truck-crew { --m: var(--mm); }
+  .mbts-wheel { position: absolute; bottom: 0; z-index: 3; width: 4.43%; aspect-ratio: 1; }
+  .mbts-wheel img { display: block; width: 100%; height: 100%; }
+  .mbts-wheel.w1 { right: 27.62%; }
+  .mbts-wheel.w2 { right: 44.55%; }
+}
+/* a phone turned on its side: no headline (there is no room), small readouts tucked into the corners, a thin road */
+@media (max-width: 767px) and (max-height: 520px) {
+  .home-service-mb-street-run { --story-mb: 420; }
+  .home-service-mb-street-stick { --ground: clamp(40px, 17dvh, 90px); }
+  .home-service-mb-street-title { display: none; }
+  .home-service-mb .home-service-hud { top: max(10px, env(safe-area-inset-top)); left: max(14px, env(safe-area-inset-left)); gap: 6px; }
+  .home-service-mb .home-service-route { top: max(10px, env(safe-area-inset-top)); right: max(14px, env(safe-area-inset-right)); }
+  .home-service-mb .home-service-chip, .home-service-mb .home-service-route { padding: 6px 12px; }
+  .home-service-mb .home-service-chip .txt, .home-service-mb .home-service-route .txt, .home-service-mb .home-service-count { font-size: 10px; }
+  .home-service-mb .home-service-plus { font-size: 11px; padding: 4px 10px; }
+}
+@media (max-width: 767px) {
+  .home-service-mb-street-title { position: absolute; top: calc(22 * var(--service-rem)); left: calc(2 * var(--service-rem)); z-index: 2; color: #111; }
+}

@@ -1,0 +1,126 @@
+/* ============================================================================
+   TESTIMONIALS — a plane crosses the screen behind an angled clip that wipes
+   the white panel in from the right as it passes.
+   ========================================================================== */
+
+.home-testi-wrap { position: relative; z-index: 2; }
+/* the section rides two viewports up over the tail of the why-us scroll, and
+   the plane and the panel it wipes in share a single cell */
+.home-testi {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  /* it used to ride two viewports up over the ship's cloud bank; now it rides
+     a little way up over the end of the road, so the plane wipes the panel in
+     over the parked truck instead of after a blank screen */
+  margin-top: -70vh;
+  --overlap-clip: -60;
+  contain: paint;
+}
+.home-testi-plane,
+.home-testi-content { grid-area: 1 / 1 / 2 / 2; }
+
+/* --- the plane ------------------------------------------------------------ */
+.home-testi-plane {
+
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  width: 100vw;
+  height: 100vh;
+  opacity: 1;
+  pointer-events: none;
+  transform: translate(calc((var(--overlap-clip) * 1vw) - 50vw), 0);
+}
+.home-testi-plane-inner { display: flex; justify-content: flex-end; align-items: center; width: 100%; height: 100%; }
+.home-testi-plane-img { position: relative; z-index: 2; width: 100%; content-visibility: visible; }
+.home-testi-plane-img-main { position: relative; z-index: 2; }
+.home-testi-plane-img-shadow {
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; height: 100%;
+  opacity: .6;
+  transform: translate(calc(var(--pos-x, 0) * 1%), calc(var(--pos-y, 0) * 1%)) scale(var(--scale, 1));
+}
+.home-testi-plane-cloud-wrap { position: absolute; top: 0; left: 0; z-index: 1; display: none; width: 100%; height: 100%; }
+.home-testi-plane-cloud { position: absolute; z-index: 1; will-change: transform, opacity; }
+.home-testi-plane-cloud.cloud-1 { top: 0;        left: -10%; width: calc(162 * var(--section-rem)); opacity: 0; transform: rotate(168deg); }
+.home-testi-plane-cloud.cloud-2 { bottom: -28%;  left: 6%;   width: calc(160 * var(--section-rem)); opacity: 0; transform: rotate(320deg); }
+
+/* --- the panel the plane wipes in ---------------------------------------- */
+.home-testi-content { position: sticky; top: 0; z-index: 1; contain: paint; }
+.home-testi-content-inner {
+  /* the right edge of the visible wedge, in vw — the plane's nose rides it */
+
+  position: relative;
+  padding-top: min(calc(15.4 * var(--section-rem)), 13.4615vh);
+  background-color: var(--bg-main);
+  contain: paint;
+  overflow: hidden;
+  clip-path: polygon(
+    0 0,
+    calc(var(--overlap-clip) * 1vw) 0vh,
+    calc((var(--overlap-clip) * 1vw) + 8vw) 50vh,
+    calc(var(--overlap-clip) * 1vw) 100vh,
+    calc(var(--overlap-clip) * 1vw) 100%,
+    0 100%
+  );
+}
+.home-testi-stick-block { height: 120vh; }
+
+.home-testi-text-wrap {
+  grid-area: 1 / 6 / 2 / -2;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: calc(6.2 * var(--section-rem));
+}
+.home-testi-title { width: calc(var(--container-one-column) * 7 + var(--container-column-gap) * 6); }
+.home-testi-desc  { width: calc(var(--container-one-column) * 3 + var(--container-column-gap) * 2); color: var(--content-soft); }
+
+.home-testi-main { grid-area: 2 / 6 / 3 / -2; pointer-events: auto; }
+.home-testi-item { background-color: var(--bg-main); }
+.home-testi-item-inner { display: flex; justify-content: space-between; margin-bottom: calc(6.4 * var(--section-rem)); padding-block: calc(6 * var(--section-rem)); }
+.home-testi-item-info { width: calc(var(--container-one-column) * 2 + var(--container-column-gap)); }
+.home-testi-item-thumb { width: calc(18.9 * var(--section-rem)); height: calc(18.9 * var(--section-rem)); margin-bottom: calc(1.6 * var(--section-rem)); aspect-ratio: 1; }
+.home-testi-item-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.home-testi-item-info-inner { display: flex; flex-flow: column; gap: calc(.8 * var(--section-rem)); }
+.home-testi-item-name { margin-bottom: calc(1.6 * var(--section-rem)); color: var(--content-main); text-transform: uppercase; }
+.home-testi-item-pos { color: var(--content-sub); }
+.home-testi-item-company-wrap { display: flex; flex-flow: column; }
+.home-testi-item-company { display: flex; gap: calc(.4 * var(--section-rem)); color: var(--content-sub); }
+.home-testi-item-main { width: calc(var(--container-one-column) * 7 + var(--container-column-gap) * 6); }
+.home-testi-item-content { color: var(--content-main); }
+.home-testi-item-line { width: 100%; height: var(--border-size); background-color: var(--border-light); }
+
+@media (max-width: 991px) {
+  .home-testi-title { width: calc(var(--container-one-column) * 4 + var(--container-column-gap) * 3); }
+  .home-testi-item-inner { margin-bottom: calc(3.2 * var(--section-rem)); padding-block: calc(6.4 * var(--section-rem)); }
+  .home-testi-item-thumb { width: 100%; height: auto; }
+}
+@media (max-width: 767px) {
+  /* no plane wipe on phones, so nothing to overlap: start after the services */
+  .home-testi { margin-top: 0; }
+  .home-testi-plane { display: none; }
+  .home-testi-content-inner { clip-path: none; }
+  .home-testi-text-wrap { flex-flow: column; align-items: flex-start; gap: calc(3.2 * var(--section-rem)); }
+  .home-testi-title, .home-testi-desc { width: auto; }
+  .home-testi-item-inner { flex-flow: column; gap: calc(3.2 * var(--section-rem)); }
+  .home-testi-item-info, .home-testi-item-main { width: auto; }
+  .home-testi-stick-block { display: none; }
+}
+
+.home-testi-plane-img-shadow { transform: translate(calc(var(--pos-x, 0) * 1%), calc(var(--pos-y, 0) * 1%)) scale(var(--scale, 1)); }
+@media (min-width: 768px) and (max-width: 991px) {
+  /* the tablet panel is shown from its top edge, so it must not ride up over
+     the end of the road */
+  .home-testi { margin-top: 0; }
+  .home-testi-plane { transform: translate(0, calc((var(--overlap-clip) * 1vh) - 60vh)); }
+  .home-testi-plane-inner { justify-content: center; align-items: stretch; transform: rotate(270deg) scale(1.35); }
+  .home-testi-content-inner { clip-path: polygon(0 calc(var(--overlap-clip) * 1vh), 50% calc((var(--overlap-clip) * 1vh) - 10vh), 100% calc(var(--overlap-clip) * 1vh), 100% 100%, 0 100%); }
+}

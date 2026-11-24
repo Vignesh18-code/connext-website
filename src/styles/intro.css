@@ -1,0 +1,272 @@
+/* ============================================================================
+   INTRO — "We move freight. We own the outcome."
+   A sticky left column (thumb + headline) parked against the bottom of the
+   viewport while the right column scrolls its copy and stat rows past it.
+   ========================================================================== */
+
+/* black spacer that continues the hero so the overlap panel has something to
+   travel across — the original keeps this block inside .home-hero itself */
+.home-hero-wrap { position: relative; z-index: 2; }
+/* (the black spacer under the hero was removed: the dark Pickup section
+   now follows the hero directly) */
+
+.home-intro-wrap {
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+  margin-top: calc(calc(-100 * var(--section-rem)) - 50vh);
+}
+
+/* the blurred glow that bridges the black hero into the white intro panel */
+.home-intro-overlap-bg {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  width: 100%;
+  height: calc(100 * var(--section-rem));
+  margin-bottom: -1px;
+  pointer-events: none;
+  isolation: isolate;
+  overflow: hidden;
+}
+.home-intro-overlap-bg-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  transform: scale(1.2, .7);
+  transform-origin: 50% 100%;
+  transform-style: preserve-3d;
+  filter: drop-shadow(calc(.2 * var(--section-rem)) calc(.4 * var(--section-rem)) calc(.6 * var(--section-rem)) #5d0fd3);
+}
+
+.home-intro {
+  position: relative;
+  z-index: 3;
+  background-color: var(--bg-main);
+  color: var(--content-main);
+  pointer-events: auto;
+  contain: paint;
+}
+
+/* --- left column: thumb + headline, stuck to the bottom of the viewport -- */
+.home-intro-stick-wrap {
+  grid-area: 1 / 2 / 3 / 8;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  position: relative;
+}
+.home-intro-stick {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  height: 100vh;
+  margin-top: calc(calc(63.9 * var(--section-rem)) - 100vh);
+  padding-bottom: calc(8.6 * var(--section-rem));
+}
+.home-intro-thumb {
+  width: calc(var(--container-one-column) * 3 + var(--container-column-gap) * 2);
+  margin-bottom: calc(6.4 * var(--section-rem));
+}
+
+/* --- right column: copy, button, stats ----------------------------------- */
+.home-intro-text-wrap.is-copy  { grid-area: 1 / 12 / 2 / -2; }
+.home-intro-text-wrap.is-stats { grid-area: 2 / 12 / 3 / -2; }
+
+.home-intro-desc { margin-bottom: calc(6 * var(--section-rem)); }
+.home-intro-btn { display: inline-block; margin-bottom: calc(19.6 * var(--section-rem)); cursor: pointer; text-decoration: none; color: inherit; }
+.home-intro-btn .btn { flex: 0 0 auto; width: fit-content; }
+
+.home-intro-label { position: relative; padding-bottom: calc(1.6 * var(--section-rem)); }
+.home-intro-label-line {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  width: 100%;
+  height: var(--border-size);
+  background-color: var(--border-main);
+}
+
+.home-intro-stats { display: flex; flex-flow: column; margin-bottom: calc(10 * var(--section-rem)); }
+.home-intro-stats-item {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-block: calc(6 * var(--section-rem));
+}
+.home-intro-stats-item-val { margin-bottom: calc(2.4 * var(--section-rem)); }
+.home-intro-stats-item-desc { color: var(--content-soft); }
+.home-intro-stats-item-line {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  height: var(--border-size);
+  background-color: var(--border-light);
+}
+
+@media (max-width: 991px) {
+  .home-intro-overlap-bg { display: none; }
+  .home-intro-wrap { margin-top: calc(-15 * var(--section-rem)); }
+  .home-intro-desc { margin-bottom: calc(4.2 * var(--section-rem)); }
+  .home-intro-stick { margin-top: calc(calc(55 * var(--section-rem)) - 100vh); }
+  .home-intro-btn { margin-bottom: calc(13.8 * var(--section-rem)); }
+  .home-intro-stats-item { padding-block: calc(4.2 * var(--section-rem)); }
+  .home-intro-stick-wrap { grid-row-start: 1; grid-column: 2 / 6; }
+  .home-intro-text-wrap.is-copy { grid-area: 1 / 6 / 2 / -2; }
+  .home-intro-text-wrap.is-stats { grid-area: 2 / 6 / 3 / -2; }
+}
+@media (max-width: 767px) {
+  .home-intro-wrap { margin-top: -1px; }
+  .home-intro-title { margin-bottom: calc(3.2 * var(--section-rem)); }
+  .home-intro-thumb { width: auto; margin-bottom: calc(8 * var(--section-rem)); }
+  .home-intro-desc { margin-bottom: calc(3.2 * var(--section-rem)); }
+  .home-intro-stick {
+    position: relative;
+    bottom: auto;
+    flex-flow: column-reverse;
+    height: auto;
+    margin-top: 0;
+    padding-bottom: 0;
+  }
+  .home-intro-btn { margin-bottom: calc(6.4 * var(--section-rem)); }
+  .home-intro-stats-item-val { margin-bottom: calc(1.6 * var(--section-rem)); }
+  .home-intro-stats { margin-bottom: calc(8 * var(--section-rem)); }
+  .home-intro-stick-wrap         { grid-area: 2 / 2 / 3 / -2; }
+  .home-intro-text-wrap.is-copy  { grid-area: 1 / 2 / 2 / -2; }
+  .home-intro-text-wrap.is-stats { grid-area: 3 / 2 / 4 / -2; }
+}
+
+/* Production density. Same two-column concept, with the empty viewport
+   and the oversized gaps pulled in. These selectors outrank the shared
+   section rules so the tighter spacing holds on every breakpoint. */
+.home-intro-wrap .home-intro-overlap-bg-img {
+  filter: none;
+}
+/* the source wave is blue; keep its shape but drop the colour so the
+   black hero fades straight into the white intro */
+.home-intro-wrap .home-intro-overlap-bg-img img {
+  filter: grayscale(1);
+}
+.home-intro-wrap .home-intro-thumb img {
+  transform-origin: center center;
+}
+.home-intro-wrap .home-intro {
+  padding-top: calc(2.4 * var(--section-rem));
+  padding-bottom: calc(4 * var(--section-rem));
+}
+.home-intro-wrap .home-intro > .container.grid {
+  row-gap: calc(2 * var(--section-rem));
+  align-items: start;
+}
+.home-intro-wrap .home-intro-stick-wrap {
+  grid-area: 1 / 2 / 3 / 8;
+  justify-content: flex-start;
+}
+.home-intro-wrap .home-intro-stick {
+  position: sticky;
+  top: calc(6.4 * var(--section-rem));
+  bottom: auto;
+  height: auto;
+  margin-top: 0;
+  padding-bottom: 0;
+  justify-content: flex-start;
+  gap: calc(2 * var(--section-rem));
+}
+.home-intro-wrap .home-intro-thumb {
+  width: 70%;
+  margin-bottom: 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.home-intro-wrap .home-intro-thumb img {
+  width: 100%;
+  aspect-ratio: 653 / 818;
+  object-fit: cover;
+}
+.home-intro-wrap .home-intro-title .heading {
+  letter-spacing: -0.03em;
+}
+.home-intro-wrap .home-intro-title .cl-note {
+  color: #00a84a;
+}
+.home-intro-wrap .home-intro-text-wrap.is-copy {
+  grid-area: 1 / 9 / 2 / -2;
+}
+.home-intro-wrap .home-intro-text-wrap.is-stats {
+  grid-area: 2 / 9 / 3 / -2;
+}
+.home-intro-wrap .home-intro-desc {
+  margin-bottom: calc(2.4 * var(--section-rem));
+}
+.home-intro-wrap .home-intro-desc .txt.fs-28 {
+  max-width: 36em;
+  line-height: 1.45;
+}
+.home-intro-wrap .home-intro-btn {
+  margin-bottom: 0;
+}
+.home-intro-wrap .home-intro-label {
+  padding-bottom: calc(.8 * var(--section-rem));
+}
+.home-intro-wrap .home-intro-label .txt.fs-16 {
+  font-size: clamp(11px, .72vw, 13px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: #01542f;
+}
+.home-intro-wrap .home-intro-stats {
+  margin-bottom: 0;
+}
+.home-intro-wrap .home-intro-stats-item {
+  padding-block: calc(1.5 * var(--section-rem));
+}
+.home-intro-wrap .home-intro-stats-item-val {
+  margin-bottom: calc(.2 * var(--section-rem));
+}
+.home-intro-wrap .home-intro-stats-item-val .heading.h0 {
+  font-size: clamp(52px, 4.4vw, 88px);
+  line-height: .92;
+  letter-spacing: -0.035em;
+}
+.home-intro-wrap .home-intro-stats-item-desc .txt {
+  color: #3a3a3a;
+}
+
+@media (max-width: 991px) {
+  .home-intro-wrap .home-intro-stick-wrap { grid-area: 1 / 2 / 3 / 8; }
+  .home-intro-wrap .home-intro-text-wrap.is-copy { grid-area: 1 / 9 / 2 / -2; }
+  .home-intro-wrap .home-intro-text-wrap.is-stats { grid-area: 2 / 9 / 3 / -2; }
+  .home-intro-wrap .home-intro-stick { margin-top: 0; }
+  .home-intro-wrap .home-intro-btn { margin-bottom: 0; }
+  .home-intro-wrap .home-intro-desc { margin-bottom: calc(2 * var(--section-rem)); }
+  .home-intro-wrap .home-intro-stats-item { padding-block: calc(1.2 * var(--section-rem)); }
+}
+@media (max-width: 767px) {
+  .home-intro-wrap .home-intro { padding-top: calc(2.8 * var(--section-rem)); }
+  .home-intro-wrap .home-intro-stick-wrap { grid-area: 1 / 2 / 2 / -2; }
+  .home-intro-wrap .home-intro-text-wrap.is-copy { grid-area: 2 / 2 / 3 / -2; }
+  .home-intro-wrap .home-intro-text-wrap.is-stats { grid-area: 3 / 2 / 4 / -2; }
+  .home-intro-wrap .home-intro-stick {
+    position: relative;
+    top: auto;
+    flex-flow: column;
+    height: auto;
+    margin-top: 0;
+    padding-bottom: 0;
+  }
+  .home-intro-wrap .home-intro-title { margin-bottom: 0; }
+  .home-intro-wrap .home-intro-thumb { width: 100%; margin-bottom: 0; }
+  .home-intro-wrap .home-intro-btn { margin-bottom: 0; }
+  .home-intro-wrap .home-intro-stats { margin-bottom: 0; }
+  .home-intro-wrap .home-intro-stats-item-val { margin-bottom: calc(.2 * var(--section-rem)); }
+}

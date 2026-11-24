@@ -1,0 +1,25 @@
+# This repository holds the website only. Everything at the top level is
+# ignored by default and the site's own files are listed back in below, so the
+# videos, zips, backups, render outputs and the separate apps that share this
+# folder never get committed by accident.
+/*
+!/.gitignore
+!/README.md
+!/index.html
+!/index.template.html
+!/package.json
+!/package-lock.json
+!/vite.config.js
+!/src/
+!/public/
+!/scripts/
+!/data-src/
+!/tools/
+
+# build output, dependencies and local clutter (anywhere in the tree)
+node_modules/
+dist/
+.DS_Store
+*.log
+__pycache__/
+*.pyc

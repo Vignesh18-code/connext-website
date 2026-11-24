@@ -1,0 +1,163 @@
+/* ============================================================================
+   THE CITY KEEPS MOVING — dark section after the Pickup.
+   Copy top-left (same type and entrance as the Pickup: .pk-anim / .pk-line),
+   a two-layer skyline along the bottom. On `.is-inview` (src/sections/city.js)
+   the buildings rise in one after another, windows flicker on, rooftop pins
+   pulse. `--cy-p` (-1..1, set
+   on scroll) drifts the two layers apart for a little depth.
+   ========================================================================== */
+
+.home-city-wrap { position: relative; z-index: 2; }
+
+.home-city {
+  --cy-p: 0;
+  --cy-front: #1d3d33;
+  --cy-front-top: #26503f;
+  --cy-back: #10231e;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  color: #fff;
+  /* black at the top so it runs on from the Pickup, warming to deep teal
+     behind the skyline */
+  background:
+    radial-gradient(60% 55% at 70% 100%, rgb(34 197 94 / .1), transparent 70%),
+    linear-gradient(to bottom, #000 0%, #050c0b 45%, #0b1a17 100%);
+  /* the skyline fills the whole section; the copy sits on top of it */
+  --cy-scale: 1;
+  /* compact: the copy, then a short skyline whose tallest towers rise
+     just behind the last lines of text */
+  padding: clamp(64px, 6vw, 96px) 0 clamp(120px, 10.5vw, 160px);
+}
+
+/* --- copy (type mirrors the Pickup) -------------------------------------- */
+/* lines up with the hero and Pickup text (same left edge) */
+.city-copy {
+  position: relative; z-index: 2; max-width: 760px;
+  margin: 0 40px 0 max(40px, calc((100% - 1024px) / 2 - 56px));
+}
+.city-eyebrow {
+  margin: 0 0 18px;
+  font: 600 clamp(12px, .9vw, 14px)/1.2 var(--font-body);
+  letter-spacing: .18em; text-transform: uppercase;
+  color: #4ade80;
+}
+.city-title {
+  margin: 0;
+  font: 700 clamp(34px, 3.6vw, 58px)/1.06 var(--font-body);
+  letter-spacing: -.04em;
+  color: #f4f5f4;
+}
+.city-title .is-accent { color: #4ade80; }
+.city-desc {
+  margin: clamp(18px, 1.8vw, 26px) 0 0;
+  max-width: 40em;
+  font: 400 clamp(15px, 1.15vw, 18px)/1.7 var(--font-body);
+  color: rgb(255 255 255 / .66);
+}
+
+/* --- skyline (full-section background) ---------------------------------- */
+.city-skyline {
+  position: absolute; inset: 0; z-index: 0;
+}
+/* keeps the copy readable: the sky stays dark behind the text and the
+   buildings come up to full strength below it */
+.city-skyline::after {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background:
+    radial-gradient(60% 70% at 22% 40%, rgb(0 0 0 / .6), transparent 75%),
+    linear-gradient(to bottom, #000 0%, rgb(0 0 0 / .5) 40%, rgb(0 0 0 / 0) 72%);
+}
+.cy-layer {
+  position: absolute; left: -2%; right: -2%; bottom: 18px;
+  display: flex; align-items: flex-end; gap: 10px;
+  will-change: transform;
+}
+.cy-back  { transform: translateX(calc(var(--cy-p) * -18px)); opacity: .9; }
+.cy-front { transform: translateX(calc(var(--cy-p) * 26px)); }
+
+.cy-b {
+  position: relative;
+  flex: var(--w) 0 0;
+  height: calc(var(--h) * var(--cy-scale));
+  border-radius: 3px 3px 0 0;
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 1.1s cubic-bezier(.2, .9, .25, 1);
+  transition-delay: calc(var(--i) * 45ms + 250ms);
+}
+.cy-back .cy-b  { background: var(--cy-back); transition-delay: calc(var(--i) * 45ms + 100ms); }
+.cy-front .cy-b {
+  background: linear-gradient(to bottom, var(--cy-front-top), var(--cy-front) 22%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .06);
+}
+.is-inview .cy-b { transform: none; }
+
+/* stepped tops: a narrower block standing on the roof */
+.cy-b.has-step::after {
+  content: ""; position: absolute; bottom: 100%; left: 12%;
+  width: var(--sw); height: var(--sh);
+  background: inherit; border-radius: 3px 3px 0 0;
+}
+
+/* window grid on some front buildings, flickering on at its own pace */
+.cy-b.is-lit::before {
+  content: ""; position: absolute; inset: 14px 12% 10px;
+  background-image: radial-gradient(circle at 50% 50%, rgb(250 214 150 / .9) 0 1.6px, transparent 2.2px);
+  background-size: 14px 16px;
+  opacity: 0;
+}
+.is-inview .cy-b.is-lit::before {
+  animation: cy-windows var(--t) ease-in-out calc(var(--i) * 45ms + 1.2s) infinite;
+}
+@keyframes cy-windows {
+  0%, 100% { opacity: .18; }
+  40%      { opacity: .55; }
+  60%      { opacity: .32; }
+}
+
+/* rooftop pins, like the ones on the hero globe */
+.cy-pin {
+  position: absolute; left: 50%; top: -14px;
+  width: 7px; height: 7px; margin-left: -3.5px;
+  border-radius: 50%; background: #4ade80;
+  box-shadow: 0 0 10px #4ade80;
+  opacity: 0; transition: opacity .6s ease 1.6s;
+}
+.cy-pin::after {
+  content: ""; position: absolute; inset: -6px;
+  border-radius: 50%; border: 1.5px solid #4ade80;
+  opacity: 0;
+}
+.is-inview .cy-pin { opacity: 1; }
+.is-inview .cy-pin::after { animation: cy-ping 2.4s cubic-bezier(0, .55, .45, 1) 1.8s infinite; }
+@keyframes cy-ping {
+  0%   { transform: scale(.4); opacity: .9; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+/* the street the skyline stands on */
+.cy-street {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 18px;
+  background: #0a1512;
+  box-shadow: 0 -1px 0 rgb(74 222 128 / .12);
+  overflow: hidden;
+}
+
+/* --- responsive ---------------------------------------------------------- */
+@media (max-width: 767px) {
+  .home-city { --cy-scale: .9; padding: 64px 0 128px; }
+  .city-copy { margin: 0 24px; }
+  .city-title { font-size: clamp(30px, 8.4vw, 40px); }
+  .city-desc { font-size: 15px; }
+  .cy-layer { gap: 6px; }
+  /* half as many buildings so each keeps a building's proportions */
+  .cy-b:nth-child(2n) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cy-b { transform: none; transition: none; }
+  .cy-layer { transform: none; }
+  .cy-pin { opacity: 1; transition: none; }
+  .is-inview .cy-b.is-lit::before { animation: none; opacity: .3; }
+  .is-inview .cy-pin::after { animation: none; }
+}

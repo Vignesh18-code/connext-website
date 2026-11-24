@@ -1,0 +1,165 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>truck build v3</title>
+<style>body{margin:0;background:#9a9;font:12px monospace}#c{display:block;max-width:100%}#log{position:fixed;right:4px;top:4px;background:#ffd;padding:3px;max-width:340px;white-space:pre-wrap}</style>
+<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js"}}</script>
+</head><body><canvas id="c"></canvas><div id="log">boot</div>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from '/node_modules/three/examples/jsm/loaders/GLTFLoader.js';
+
+/* ------------------------------------------------------------------ layout
+   The truck is ONE complete 3D model (model/truck-v3.glb: front +x, up +y, right side +z, metres,
+   made on Magnific from four photoreal views). Every layer of the page is rendered from it:
+     plate    2664 x 614   side view, 200 px per metre, truck centred at x = 1661, wheels on y = 614
+     flip     2880 x 809   45 frames, side -> overhead, camera pushes in as it rises
+     top      5760 x 1618  overhead, = frame 44 at 2x
+   The numbers (plate size, 1.0811 plate->frame factor, ground line, centres) are the page's own CSS
+   geometry, so the new truck drops into the same layout as every earlier version. */
+const PX = 200;                           // plate px per metre
+const PLATE_W = 2664, PLATE_H = 614;
+const PLATE_CX = 1661;                    // truck centre on the plate
+const SCALE_F = 1.0811;                   // plate px -> flip-frame px
+const FRAME_CX = PLATE_CX * SCALE_F + 72; // truck centre in the flip frame (1867.8)
+const S_TOP = 330;                        // overhead px per metre in the flip frame (side view is 216.2)
+const S_SIDE = SCALE_F * PX;
+const LOGO = { w: 0.62 };                 // logo width as a fraction of the box side
+// the navy side panel of the box in the model's own metres (found with api.info(), surface depth with api.rayZ())
+const PANEL = { x0: -1.97, x1: 0.31, y0: 0.90, y1: 2.33, zR: 0.823, zL: -0.834 };
+// the navy roof of the box, seen from above (found in the overhead render): the full Connext logo goes here, reading along the truck
+const ROOF = { cx: -0.775, cz: 0, w: 1.7 };
+// the wheels (found with api.groundClusters() and checked with api.debugPlate())
+const WHEELS = { front: { u: 1.0405 }, rear: { u: -1.2135 }, r: 0.295, v: 0.295 };
+
+const log = (s) => { document.getElementById('log').textContent = s; };
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true, alpha: true, preserveDrawingBuffer: true, premultipliedAlpha: false });
+renderer.setClearColor(0x000000, 0); renderer.setPixelRatio(1);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const gltf = await new GLTFLoader().loadAsync('/tools/truck-render/model/truck-v3.glb');
+const truck = gltf.scene;
+let mesh; truck.traverse((o) => { if (o.isMesh) mesh = o; });
+const tex = mesh.material.map; tex.anisotropy = 16;
+mesh.material = new THREE.MeshBasicMaterial({ map: tex, side: THREE.DoubleSide });   // the photo texture already carries its lighting
+truck.updateMatrixWorld(true);
+let bb = new THREE.Box3().setFromObject(truck);
+truck.position.set(-(bb.min.x + bb.max.x) / 2, -bb.min.y, -(bb.min.z + bb.max.z) / 2);   // centred, wheels on y = 0
+truck.updateMatrixWorld(true);
+bb = new THREE.Box3().setFromObject(truck);
+const DIM = bb.getSize(new THREE.Vector3());
+
+const root = new THREE.Group(); root.add(truck);
+const scene = new THREE.Scene(); scene.add(root);
+
+/* ---------------------------------------------------- the Connext logo on the box sides */
+function loadImg(src) { return new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; }); }
+const logoImg = await loadImg('/tools/truck-render/assets/logo.png');
+const logoTex = new THREE.CanvasTexture((() => { const c = document.createElement('canvas'); c.width = logoImg.width * 2; c.height = logoImg.height * 2; c.getContext('2d').drawImage(logoImg, 0, 0, c.width, c.height); return c; })());
+logoTex.colorSpace = THREE.SRGBColorSpace; logoTex.anisotropy = 16;
+const decals = new THREE.Group(); root.add(decals);
+function placeLogo(panel) {                       // panel = {x0,x1,y0,y1,zR,zL} the navy side panel in world metres
+  decals.clear();
+  const pw = panel.x1 - panel.x0, ph = panel.y1 - panel.y0;
+  const w = pw * LOGO.w, h = w * logoImg.height / logoImg.width;
+  for (const side of [1, -1]) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: logoTex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+    m.position.set((panel.x0 + panel.x1) / 2, (panel.y0 + panel.y1) / 2, side > 0 ? panel.zR + 0.004 : panel.zL - 0.004);
+    if (side < 0) m.rotation.y = Math.PI;
+    decals.add(m);
+  }
+  // the roof: the same logo, flat on top, upright when the truck points right in the overhead view
+  const roofY = window.__roofY ? window.__roofY() : DIM.y;
+  const rm = new THREE.Mesh(new THREE.PlaneGeometry(ROOF.w, ROOF.w * logoImg.height / logoImg.width), new THREE.MeshBasicMaterial({ map: logoTex, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2 }));
+  rm.rotation.x = -Math.PI / 2; rm.position.set(ROOF.cx, roofY + 0.006, ROOF.cz);
+  decals.add(rm);
+}
+
+/* ------------------------------------------------------------ soft ground shadow */
+const shadowTex = (() => { const c = document.createElement('canvas'); c.width = 512; c.height = 256; const g = c.getContext('2d');
+  const gr = g.createRadialGradient(256, 128, 20, 256, 128, 250); gr.addColorStop(0, 'rgba(0,0,0,.5)'); gr.addColorStop(.62, 'rgba(0,0,0,.2)'); gr.addColorStop(1, 'rgba(0,0,0,0)');
+  g.save(); g.scale(1, .5); g.fillStyle = gr; g.fillRect(0, 0, 512, 512); g.restore(); return new THREE.CanvasTexture(c); })();
+const shadow = new THREE.Mesh(new THREE.PlaneGeometry(DIM.x + 0.9, DIM.z + 0.7), new THREE.MeshBasicMaterial({ map: shadowTex, transparent: true, depthWrite: false }));
+shadow.rotation.x = -Math.PI / 2; shadow.position.y = 0.006; root.add(shadow);
+
+/* --------------------------------------------------------------- cameras */
+function makeCam(W, H, s, cxPx, cyPx, theta, cu = 0) {   // orthographic; pixel x = cxPx + s*(u-cu); pixel y = cyPx - s*(v cos t - w sin t)
+  const cam = new THREE.OrthographicCamera(-cxPx / s + cu, (W - cxPx) / s + cu, cyPx / s, (cyPx - H) / s, -50, 50);
+  const dir = new THREE.Vector3(0, Math.sin(theta), Math.cos(theta));
+  cam.position.set(cu, 0, 0).addScaledVector(dir, 20);
+  cam.up.set(0, Math.cos(theta), -Math.sin(theta));
+  cam.lookAt(new THREE.Vector3(cu, 0, 0)); cam.updateProjectionMatrix(); cam.updateMatrixWorld(true);
+  return cam;
+}
+const draw = (W, H, cam) => { renderer.setSize(W, H, false); renderer.render(scene, cam); };
+async function post(name, src) {
+  const blob = await new Promise((r) => (src || renderer.domElement).toBlob(r, 'image/png'));
+  const res = await fetch('http://localhost:5199/save?name=' + encodeURIComponent(name), { method: 'POST', body: blob });
+  return res.ok;
+}
+const smooth = (t) => { t = Math.min(1, Math.max(0, t)); return t * t * (3 - 2 * t); };
+const plateCam = () => makeCam(PLATE_W, PLATE_H, PX, PLATE_CX, PLATE_H, 0);
+function flipCam(k, n = 45, W = 2880, H = 809, ss = 1) {
+  const t = k / (n - 1), theta = (Math.PI / 2) * (0.5 - 0.5 * Math.cos(Math.PI * t));
+  const deg = theta * 180 / Math.PI;
+  const zoom = 1 + (S_TOP / S_SIDE - 1) * smooth((deg - 40) / 50);          // the camera pushes in as it rises
+  const s = S_SIDE * zoom, vr = DIM.y / 2;
+  const refFy = (749.2 - S_SIDE * vr) + (404.5 - (749.2 - S_SIDE * vr)) * smooth(theta / (Math.PI / 2));
+  const A = refFy + s * vr * Math.cos(theta);
+  return makeCam(W, H, s * ss, FRAME_CX * ss, A * ss, theta);
+}
+
+/* ------------------------------------------------------- public API */
+let WH = WHEELS;   // wheel geometry in metres: { front:{u}, rear:{u}, r, v }
+window.api = {
+  DIM, PX, PLATE_CX, set wheels(v) { WH = v; }, get wheels() { return WH; },
+  info() {
+    // side-on render, to find the navy side panel (for the logo) and look at the ground contact
+    const W = 2000, H = 1250; const cam = makeCam(W, H, 400, W / 2, H - 20, 0);
+    decals.visible = false; shadow.visible = false; draw(W, H, cam);
+    const gl = renderer.getContext(); const px = new Uint8Array(W * H * 4); gl.readPixels(0, 0, W, H, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    const rowC = new Int32Array(H), colC = new Int32Array(W);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = (y * W + x) * 4; const r = px[i], g = px[i + 1], b = px[i + 2], a = px[i + 3];
+      if (a > 200 && b > r + 25 && b > g + 15 && b > 60 && b < 190) { rowC[H - 1 - y]++; colC[x]++; } }       // rows counted from the top
+    const mr = Math.max(...rowC), mc = Math.max(...colC);
+    const ys = [...rowC.keys()].filter((y) => rowC[y] > mr * 0.55), xs = [...colC.keys()].filter((x) => colC[x] > mc * 0.55);
+    const x0 = xs[0], x1 = xs[xs.length - 1], y0 = ys[0], y1 = ys[ys.length - 1];   // y from the top
+    decals.visible = true; shadow.visible = true;
+    const toU = (x) => (x - W / 2) / 400, toV = (yTop) => (H - 20 - yTop) / 400;
+    return { dim: DIM.toArray(), navyPx: [x0, y0, x1, y1], navyU: [toU(x0), toU(x1)], navyV: [toV(y1), toV(y0)] };
+  },
+  setPanel(p) { placeLogo(p); return true; },
+  groundClusters() {   // x-ranges of the vertices touching the ground (the tyres)
+    const g = mesh.geometry, P = g.attributes.position, m = mesh.matrixWorld, v = new THREE.Vector3(); const xs = [];
+    for (let i = 0; i < P.count; i++) { v.fromBufferAttribute(P, i).applyMatrix4(m); if (v.y < 0.04) xs.push(v.x); }
+    xs.sort((a, b) => a - b); const cl = []; let cur = [xs[0]];
+    for (let i = 1; i < xs.length; i++) { if (xs[i] - xs[i - 1] > 0.25) { cl.push(cur); cur = []; } cur.push(xs[i]); } cl.push(cur);
+    return cl.map((c) => ({ x0: +c[0].toFixed(3), x1: +c[c.length - 1].toFixed(3), n: c.length }));
+  },
+  rayY(x, z) { const rc = new THREE.Raycaster(new THREE.Vector3(x, 6, z), new THREE.Vector3(0, -1, 0)); const h = rc.intersectObject(mesh, false); return h.length ? h[0].point.y : null; },
+  rayZ(u, v, dir = 1) { const rc = new THREE.Raycaster(new THREE.Vector3(u, v, 5 * dir), new THREE.Vector3(0, 0, -dir)); const h = rc.intersectObject(mesh, false); return h.length ? h[0].point.z : null; },
+  async plate(out) { draw(PLATE_W, PLATE_H, plateCam()); return out ? await post(out) : true; },
+  async flip(k, out) { draw(2880, 809, flipCam(k)); return out ? await post(out) : true; },
+  async top(out) { draw(5760, 1618, flipCam(44, 45, 5760, 1618, 2)); return out ? await post(out) : true; },
+  async wheel(which, out) {
+    const w = WH, uc = w[which].u, vc = w.v, D = w.r * 2, size = 256;
+    const cam = new THREE.OrthographicCamera(-D / 2, D / 2, D / 2, -D / 2, -50, 50); cam.position.set(uc, vc, 20); cam.lookAt(uc, vc, 0); cam.updateProjectionMatrix();   // frustum is camera-local: the position does the centring
+    shadow.visible = false; renderer.setSize(size, size, false); renderer.render(scene, cam); shadow.visible = true;
+    const c2 = document.createElement('canvas'); c2.width = c2.height = size; const g2 = c2.getContext('2d');
+    g2.drawImage(renderer.domElement, 0, 0, size, size);
+    g2.globalCompositeOperation = 'destination-over'; g2.fillStyle = '#1d1d1f'; g2.fillRect(0, 0, size, size);   // see-through gaps between the rim bolts become dark, so the static wheel never shows through the spinning one
+    g2.globalCompositeOperation = 'destination-in';
+    g2.beginPath(); g2.arc(size / 2, size / 2, size / 2 - 0.5, 0, Math.PI * 2); g2.fill();
+    return out ? await post(out, c2) : true;
+  },
+  // debug: plate with the wheel circles drawn on it
+  async debugPlate(out) {
+    draw(PLATE_W, PLATE_H, plateCam());
+    const c2 = document.createElement('canvas'); c2.width = PLATE_W; c2.height = PLATE_H; const g = c2.getContext('2d'); g.drawImage(renderer.domElement, 0, 0);
+    if (WH) { g.strokeStyle = 'red'; g.lineWidth = 3; for (const k of ['front', 'rear']) { g.beginPath(); g.arc(PLATE_CX + PX * WH[k].u, PLATE_H - PX * WH.v, PX * WH.r, 0, 7); g.stroke(); } }
+    return await post(out, c2);
+  },
+};
+window.__roofY = () => { const rc = new THREE.Raycaster(new THREE.Vector3(ROOF.cx, 6, ROOF.cz), new THREE.Vector3(0, -1, 0)); const h = rc.intersectObject(mesh, false); return h.length ? h[0].point.y : DIM.y; };
+placeLogo(PANEL);
+log('ready ' + DIM.toArray().map((v) => v.toFixed(2)).join(' x ')); window.ready = true;
+await window.api.plate();
+</script></body></html>

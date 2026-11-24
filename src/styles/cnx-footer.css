@@ -1,0 +1,53 @@
+/* ============================================================================
+   FOOTER (Connext) — dark band: brand + three link columns, then a slim
+   legal line.
+   ========================================================================== */
+.cnx-footer-wrap { position: relative; z-index: 3; background-color: #0a171b; }
+/* section-sizing.css (from the reference) fixes .footer-wrap's height on
+   small screens; this footer sizes to its content */
+.cnx-footer-wrap.footer-wrap { height: auto; }
+
+.cnx-footer {
+  --cnx-side: max(24px, calc((100% - 1120px) / 2));
+  position: relative;
+  overflow: hidden;
+  color: rgb(255 255 255 / .72);
+  font-family: var(--font-body);
+}
+.cnx-footer a { color: inherit; text-decoration: none; transition: color .25s ease; }
+.cnx-footer a:hover { color: #4ade80; }
+.cnx-footer a:focus-visible { outline: 2px solid #4ade80; outline-offset: 3px; border-radius: 2px; }
+
+.cnx-footer-inner { padding: clamp(56px, 6vw, 88px) var(--cnx-side) 0; }
+
+.cnx-footer-top {
+  display: grid;
+  grid-template-columns: 1.45fr 1fr 1fr 1fr;
+  gap: 40px;
+}
+.cnx-footer-logo { display: inline-block; }
+.cnx-footer-logo img { display: block; width: auto; height: 34px; }
+.cnx-footer-tagline { margin: 18px 0 0; max-width: 270px; font-size: 16px; line-height: 1.9; }
+
+.cnx-footer-head { margin: 4px 0 22px; font: 500 18px/1.2 var(--font-body); color: #fff; letter-spacing: 0; }
+.cnx-footer-col ul { margin: 0; padding: 0; list-style: none; }
+.cnx-footer-col li { margin: 0 0 12px; font-size: 16px; line-height: 1.4; }
+
+.cnx-footer-bottom {
+  margin-top: clamp(48px, 5vw, 72px);
+  padding: 28px 0 clamp(32px, 4vw, 48px);
+  border-top: 1px solid rgb(255 255 255 / .1);
+}
+.cnx-footer-bottom p { margin: 0; font-size: 15px; line-height: 1.6; color: rgb(255 255 255 / .58); }
+.cnx-footer-bottom span { padding: 0 .35em; }
+
+/* --- responsive ------------------------------------------------------------ */
+@media (max-width: 991px) {
+  .cnx-footer-top { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 48px; }
+  .cnx-footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
+  .cnx-footer-top { grid-template-columns: minmax(0, 1fr); row-gap: 36px; }
+  .cnx-footer-head { margin-bottom: 16px; }
+  .cnx-footer-bottom p { font-size: 14px; }
+}

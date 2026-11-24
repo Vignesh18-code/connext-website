@@ -1,0 +1,159 @@
+/* ============================================================================
+   WHY US — the camera pulls back off the ship deck until the vessel is a speck
+   on open water, then flies up through a cloud bank into the "Why us" list.
+   ========================================================================== */
+
+.home-why-wrap { display: flex; flex-flow: column; }
+
+.home-why { position: sticky; bottom: 0; z-index: 1; margin-top: -100vh; }
+
+.home-why-stick {
+  position: sticky;
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(1px, 1fr);
+  height: 100vh;
+  contain: paint;
+}
+/* the stage spans both rows so it stays pinned behind the empty scroll run
+   *and* behind the list that slides up over it */
+.home-why-stick-wrap { position: relative; z-index: 1; grid-area: 1 / 1 / 3 / -1; }
+.home-why-empty-block.first-screen { grid-area: 1 / 1 / 2 / -1; }
+.home-why-stick > * { grid-area: 1 / 1; }
+
+.home-why-empty-block { height: 100vh; }
+.home-why-empty-block.first-screen { height: 600vh; }
+.home-why-empty-block.bottom { height: 100vh; }
+
+/* --- the water ------------------------------------------------------------ */
+.home-why-ocean {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  overflow: hidden;
+}
+.home-why-ocean-img { position: relative; z-index: 1; width: 100%; height: 100%; }
+.home-why-ocean-img img { width: 100%; height: 100%; object-fit: cover; }
+
+/* --- the vessel ----------------------------------------------------------- */
+.home-why-ship {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.home-why-ship-img {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: calc(48.7 * var(--section-rem));
+}
+.home-why-ship-img.bot { top: auto; bottom: 100%; align-items: flex-start; }
+.home-why-ship-img-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  filter:
+    drop-shadow(calc(-.4 * var(--section-rem)) calc(-.8 * var(--section-rem)) calc(1.6 * var(--section-rem)) #101c2580)
+    drop-shadow(calc(-.8 * var(--section-rem)) calc(-1.6 * var(--section-rem)) calc(3.2 * var(--section-rem)) #101c2580)
+    drop-shadow(calc(-1.6 * var(--section-rem)) calc(-3.2 * var(--section-rem)) calc(6.4 * var(--section-rem)) #101c2580);
+}
+.home-why-ship-img-inner.shadow { position: absolute; inset: -1%; z-index: 1; filter: drop-shadow(-5px calc(-8 * var(--section-rem)) calc(1.4 * var(--section-rem)) #000); }
+
+/* --- the cloud bank ------------------------------------------------------- */
+.home-why-cloud-decor { position: relative; z-index: 3; }
+.home-why-cloud-decor-item { position: absolute; }
+.home-why-cloud-decor-item.cloud-1,
+.home-why-cloud-decor-item.cloud-2 { width: calc(102.8 * var(--section-rem)); }
+.home-why-cloud-decor-item.cloud-3 { position: absolute; top: 0; left: 0; width: calc(260.4 * var(--section-rem)); opacity: 0; }
+
+.home-why-cloud-overlap-bg { position: relative; z-index: 3; background-color: #a686e04d; }
+.home-why-cloud-overlap { position: relative; z-index: 4; width: 100%; height: 100%; transform-origin: 50% 300%; }
+.home-why-cloud-overlap-item { position: absolute; content-visibility: visible; }
+.home-why-cloud-overlap-item.cloud-1 { z-index: 3; bottom: 13%; left: 95%;  width: calc(260.4 * var(--section-rem)); transform-origin: 0 0;    transform: translate(-50%, 50%); }
+.home-why-cloud-overlap-item.cloud-2 { z-index: 1; bottom: 0;   left: 20%;  width: calc(210.2 * var(--section-rem)); transform-origin: 100% 0; transform: translate(-50%, -50%); }
+.home-why-cloud-overlap-item.cloud-3 { z-index: 4; top: 0;      right: 30%; width: calc(198.2 * var(--section-rem)); transform-origin: 100% 0; transform: translate(-50%, -50%) rotate(137deg); }
+.home-why-cloud-overlap-item.cloud-4 { z-index: 6; top: 75%;    left: 56%;  width: calc(147.8 * var(--section-rem)); transform-origin: 10% -15%; transform: translate(-50%, -50%) rotate(61deg); }
+.home-why-cloud-overlap-item.cloud-5 { z-index: 5; bottom: 0;   left: 41%;  width: calc(198.2 * var(--section-rem)); transform-origin: 50% 0;  transform: translate(-50%, 50%); }
+.home-why-cloud-overlap-item.cloud-6 { z-index: 7; bottom: 4%;  left: 10%;  width: calc(112.3 * var(--section-rem)); transform-origin: 0 0;    transform: translate(71%, 50%); }
+.home-why-cloud-overlap-item.cloud-7 { z-index: 2; top: 50%;    right: 30%; width: calc(260.4 * var(--section-rem)); transform-origin: 100% 0; transform: translateY(-50%); }
+
+/* --- the list ------------------------------------------------------------- */
+.home-why-main {
+  position: relative;
+  z-index: 2;
+  grid-area: 2 / 1 / 3 / -1;
+  margin-top: -100vh;
+  overflow: hidden;
+  color: var(--content-main);
+}
+.home-why-text-wrap {
+  grid-area: 1 / 7 / 2 / -7;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: calc(28 * var(--section-rem));
+  text-align: center;
+}
+.home-why-label { margin-bottom: calc(2 * var(--section-rem)); }
+
+.home-why-main-content {
+  grid-area: 2 / 6 / 3 / -6;
+  margin-inline: calc(var(--container-column-gap) * -1);
+  padding-bottom: 100vh;
+}
+.home-why-main-list {
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  column-gap: calc(var(--container-one-column) * 2 + var(--container-column-gap) * 2);
+  row-gap: max(calc(12 * var(--section-rem)), 11vh);
+}
+.home-why-main-item { flex: none; width: calc(var(--container-one-column) * 3 + var(--container-column-gap) * 3.4); }
+.home-why-main-item-inner { display: flex; flex-flow: column; }
+.home-why-main-item-ic { display: flex; justify-content: center; align-items: center; width: calc(6.4 * var(--section-rem)); height: calc(6.4 * var(--section-rem)); margin-bottom: calc(2 * var(--section-rem)); }
+.home-why-main-item-ic img { width: 100%; height: 100%; object-fit: contain; }
+.home-why-main-item-title { margin-bottom: calc(2 * var(--section-rem)); }
+.home-why-main-item-desc { color: var(--content-sub); }
+
+/* the text-wrap and list share one centred container */
+.home-why-main > .container.grid { justify-items: center; }
+
+@media (max-width: 991px) {
+  .home-why-text-wrap { margin-bottom: calc(20 * var(--section-rem)); grid-column: 2 / -2; }
+  .home-why-main-list {
+    column-gap: calc(var(--container-one-column) + var(--container-column-gap));
+    row-gap: calc(var(--container-one-column) + var(--container-column-gap));
+  }
+  .home-why-main-item { width: calc(var(--container-one-column) * 2 + var(--container-column-gap) * 2.4); }
+  .home-why-cloud-overlap { transform-origin: 50% 80%; }
+}
+@media (max-width: 767px) {
+  .home-why-wrap { flex-flow: column-reverse wrap; }
+  .home-why { margin-top: -100svh; top: 0; bottom: auto; }
+  .home-why-ship-img { width: calc(28.8 * var(--section-rem)); filter: none; }
+  .home-why-empty-block.first-screen { height: 400vh; }
+  .home-why-main-item { width: 100%; }
+  .home-why-main-list { justify-content: flex-start; }
+}
+
+@media (min-width: 768px) {
+  .home-why-main-item:nth-child(2n+1):not(:last-child) .home-why-main-item-inner { text-align: end; align-items: flex-end; }
+  .home-why-main-item:last-child .home-why-main-item-inner { text-align: center; align-items: center; }
+}
+
+.home-why-ocean-scene { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.home-why-ocean-scene canvas { display: block; width: 100%; height: 100%; }

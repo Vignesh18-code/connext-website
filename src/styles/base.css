@@ -1,0 +1,296 @@
+/* ============================================================================
+   Design system — tokens, 16-column grid, typography, buttons, reveal
+   primitives. Values lifted verbatim from the united-carriers Webflow CSS.
+   ========================================================================== */
+
+:root {
+  /* palette (light surface — the default page theme) */
+  --m-white: #fff;
+  --m-black: #111;
+  --primary: #22c55e;   /* Connext green (was the reference blue #0016cb) */
+  --secondary: #f50;
+
+  --bg-main: var(--m-white);
+  --bg-sf-1: #f4f4f4;
+  --bg-sf-2: var(--m-black);
+
+  --content-main: var(--m-black);
+  --content-sub: #111111e0;
+  --content-soft: #111111b8;
+  --content-note: #1116;
+  --content-disable: #11111129;
+  --content-brand: var(--primary);
+
+  --border-size: max(1px, .1rem);
+  --border-main: #1113;
+  --border-bold: #1111114d;
+  --border-light: #1111111a;
+  --border-highlight: var(--m-black);
+
+  /* grid */
+  --container-padding: 4rem;
+  --container-column-gap: 2rem;
+  --container-column: 16;
+  --container-max-width: 100vw;
+  --container-one-column: calc(
+    (var(--container-max-width)
+      - ((var(--container-column) - 1) * var(--container-column-gap))
+      - (var(--container-padding) * 2)) / var(--container-column)
+  );
+}
+
+/* dark surface — applied to sections that invert (.cta, .home-service, …) */
+.is-dark {
+  --bg-main: var(--m-black);
+  --bg-sf-1: #1a1a1a;
+  --bg-sf-2: var(--m-white);
+
+  --content-main: var(--m-white);
+  --content-sub: #ffffffb3;
+  --content-soft: #fff9;
+  --content-note: #ffffff3d;
+  --content-disable: #ffffff29;
+
+  --border-main: #ffffff29;
+  --border-bold: #ffffff52;
+  --border-light: #ffffff14;
+  --border-highlight: var(--m-white);
+}
+
+/* the page's inherited typography — everything without an explicit `.txt`
+   size sits on this, and it is what gives unclassed boxes their line height */
+body {
+  font-family: var(--font-body);
+  font-size: 1.6rem;
+  line-height: 1.3;
+}
+
+/* ---------------------------------------------------------------------------
+   CONTAINER / 16-COLUMN GRID
+   Column lines: 1 = full-width-start, 2 = content-start, -2 = content-end.
+   Grid areas below are written with those raw line numbers, exactly as the
+   original does, so `2 / -2` spans the whole content width.
+   --------------------------------------------------------------------------- */
+.container {
+  z-index: 2;
+  position: relative;
+  flex: 1;
+  width: 100%;
+  max-width: 100vw;
+  padding-inline: var(--container-padding);
+}
+.container.grid {
+  display: grid;
+  align-content: start;
+  max-width: none;
+  padding-inline: 0;
+  column-gap: var(--container-column-gap);
+  grid-template-rows: auto;
+  grid-template-columns:
+    [full-width-start] 2rem
+    [content-start] repeat(16, minmax(1px, 1fr))
+    [content-end] 2rem
+    [full-width-end];
+}
+.container.full-h { height: 100%; }
+
+/* ---------------------------------------------------------------------------
+   TYPOGRAPHY
+   --------------------------------------------------------------------------- */
+.heading { font-family: var(--font-head); text-transform: uppercase; font-weight: 700; }
+.heading.h0 { font-size: 16rem;  line-height: 1.05; }
+.heading.h1 { font-size: 9.6rem; line-height: 1.05; }
+.heading.h2 { font-size: 7.2rem; line-height: 1.05; }
+.heading.h3 { font-size: 5.6rem; line-height: 1.05; }
+.heading.h4 { font-size: 4rem;   line-height: 1.05; }
+.heading.h5 { font-size: 3.2rem; line-height: 1.1; }
+.heading.h6 { font-size: 2.4rem; line-height: 1.1; }
+.heading.h7 { font-size: 2rem;   line-height: 1.1; }
+
+.txt { font-family: var(--font-body); }
+.txt.fs-9  { font-size: .9rem;  line-height: 1.4; }
+.txt.fs-10 { font-size: 1rem;   line-height: 1.4; }
+.txt.fs-12 { font-size: 1.2rem; line-height: 1.4; }
+.txt.fs-14 { font-size: 1.4rem; line-height: 1.3; }
+.txt.fs-16 { font-size: 1.6rem; line-height: 1.2; }
+.txt.fs-18 { font-size: 1.8rem; line-height: 1.2; }
+.txt.fs-20 { font-size: 2rem;   line-height: 1.2; }
+.txt.fs-24 { font-size: 2.4rem; line-height: 1.1; }
+.txt.fs-28 { font-size: 2.8rem; line-height: 1.2; }
+.txt.fs-32 { font-size: 3.2rem; line-height: 1.2; }
+.txt.fs-40 { font-size: 4rem;   line-height: 1; letter-spacing: -.02em; }
+
+/* mono labels are trimmed to their cap height, so a label's box hugs the
+   glyphs instead of carrying half-leading — this is what keeps the header bar
+   and every eyebrow/label row on the reference's tighter vertical rhythm */
+/* the "steinhart" text style: the heading face at Medium, uppercased */
+.txt.ff-stei {
+  font-family: var(--font-head);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.txt.ff-stei.fw-bold { font-weight: 700; }
+
+.txt.mono, .mono {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  text-box-edge: cap alphabetic;
+  text-box-trim: trim-both;
+}
+.fw-reg  { font-weight: 400; }
+.fw-med  { font-weight: 500; }
+.fw-bold { font-weight: 700; }
+
+.cl-note  { color: var(--content-note); }
+.cl-soft  { color: var(--content-soft); }
+.cl-sub   { color: var(--content-sub); }
+.cl-brand { color: var(--content-brand); }
+
+/* ---------------------------------------------------------------------------
+   BUTTONS
+   --------------------------------------------------------------------------- */
+.btn {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  padding: 1.9rem 2.8rem 1.7rem;
+  border: var(--border-size) solid var(--border-bold);
+  border-radius: 100vmax;
+  color: var(--content-main);
+  cursor: pointer;
+  transition: border-color .4s, background-color .4s, color .4s;
+}
+.btn:hover { border-color: var(--border-highlight); }
+.btn.is-solid {
+  border-color: var(--bg-sf-2);
+  background-color: var(--bg-sf-2);
+  color: var(--bg-main);
+}
+.btn.is-solid:hover {
+  border-color: var(--secondary);
+  background-color: var(--secondary);
+  color: var(--m-white);
+}
+.btn-txt { display: flex; justify-content: center; align-items: center; text-align: center; }
+.btn-txt .txt { white-space: nowrap; }
+
+a.link-block { display: inline-block; text-decoration: none; color: inherit; }
+
+/* buttons used as plain interactive rows (FAQ, footer switch) carry no chrome */
+button { appearance: none; background: none; border: 0; padding: 0; margin: 0;
+         font: inherit; color: inherit; text-align: left; cursor: pointer; }
+
+/* ---------------------------------------------------------------------------
+   IMAGE HELPERS
+   --------------------------------------------------------------------------- */
+.img-df { display: block; width: 100%; object-fit: cover; }
+.img-df.img-fill { height: 100%; }
+.img-df.img-h { width: auto; max-width: none; height: 100%; }
+.img-df.img-abs { position: absolute; }
+.pe-none { pointer-events: none; user-select: none; }
+
+/* ---------------------------------------------------------------------------
+   REVEAL PRIMITIVES
+   `.split-line-p` is the per-line gradient sweep used for every text reveal:
+   a 350%-wide gradient is clipped to the glyphs and slid across, so each line
+   lights up through the brand green before settling on its final colour.
+   --------------------------------------------------------------------------- */
+.split-line-p {
+  --bg-progress: 0;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    var(--color-final, var(--content-main)) 0%,
+    var(--color-final, var(--content-main)) 30%,
+    var(--content-brand) 40%,
+    transparent 50%,
+    transparent 60%,
+    transparent 100%
+  );
+  background-size: 350% 100%;
+  background-position-x: calc((100 - var(--bg-progress)) * 1%);
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+.split-line-p span { display: block; }
+.line-mask { overflow: hidden; }
+.line-inner { display: block; will-change: transform; }
+
+/* ---------------------------------------------------------------------------
+   LINK HOVERS
+   Two systems. `.link` is the dominant one: the label rolls up and a duplicate
+   rolls in behind it, optionally with an arrow doing the same. `.hover-line`
+   is the sliding rule, where two pseudo-elements chase each other across.
+   --------------------------------------------------------------------------- */
+.link { position: relative; display: flex; }
+.link-inner { display: grid; grid-template-columns: 1fr; grid-template-rows: auto; overflow: hidden; }
+.link-inner > * { grid-area: 1 / 1 / 2 / 2; }
+.link-top { transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+.link-bottom { transition: transform .7s cubic-bezier(.22, 1, .36, 1); transform: translateY(100%); }
+.link-ic-wrap { display: none; grid-template-columns: 1fr; overflow: hidden; }
+.link-ic-wrap > * { grid-area: 1 / 1 / 2 / 2; }
+.link-ic { display: flex; justify-content: center; align-items: center; width: 1rem; height: 1rem; transition: transform .7s cubic-bezier(.22, 1, .36, 1); }
+.link-ic.bot { transform: translate(-100%, 100%); }
+
+.hover-line {
+  --line-spacing: 1rem;
+  position: relative;
+  display: inline-block;
+  vertical-align: bottom;
+  overflow: hidden;
+}
+.hover-line::before,
+.hover-line::after {
+  content: '';
+  position: absolute;
+  bottom: .2em;
+  display: block;
+  width: 100%;
+  height: var(--border-size);
+  background-color: currentColor;
+  transition: transform .6s cubic-bezier(.66, 0, .15, 1);
+}
+.hover-line::before { left: 0; }
+.hover-line::after { left: calc(-1 * var(--line-spacing)); transform: translateX(-100%); }
+
+@media (hover: hover) and (min-width: 992px) {
+  .link:hover .link-top { transform: translate(0, -100%); }
+  .link:hover .link-bottom { transform: translate(0, 0); }
+  .link:hover .link-ic.top { transform: translate(100%, -100%); }
+  .link:hover .link-ic.bot { transform: translate(0, 0); }
+  .hover-line:hover::before { transform: translateX(calc(100% + var(--line-spacing))); }
+  .hover-line:hover::after { transform: translateX(var(--line-spacing)); }
+}
+
+@media (max-width: 1200px) {
+  :root { --container-padding: 2rem; }
+  .heading.h0 { font-size: 11.2rem; }
+  .heading.h1 { font-size: 6rem; }
+  .heading.h2 { font-size: 4.4rem; }
+  .heading.h3 { font-size: 4.8rem; }
+  .heading.h4 { font-size: 2.4rem; }
+  .heading.h5 { font-size: 2rem; }
+  .heading.h6 { font-size: 2rem; }
+  .heading.h7 { font-size: 1.8rem; }
+}
+/* per-breakpoint type overrides, matching the reference's `-mb` utilities */
+@media (max-width: 767px) {
+  :root { --container-padding: 1.6rem; }
+  .txt.fs-10-mb { font-size: 1rem; line-height: 1.4; }
+  .txt.fs-14-mb { font-size: 1.4rem; line-height: 1.3; }
+  .txt.fs-16-mb { font-size: 1.6rem; line-height: 1.2; }
+  .txt.fs-18-mb { font-size: 1.8rem; line-height: 1.2; }
+  .txt.fs-20-mb { font-size: 2rem; line-height: 1.2; }
+  .fw-reg-mb { font-weight: 400; }
+  .heading.h0 { font-size: 9.6rem; }
+  .heading.h1 { font-size: 4.8rem; }
+  .heading.h2 { font-size: 3.6rem; }
+  .heading.h6 { font-size: 1.6rem; line-height: 1.2; }
+  .txt.fs-10 { font-size: .9rem; }
+}
+
+.home-intro-wrap, .home-service-wrap, .home-why-wrap, .home-testi-wrap,
+.home-partners-wrap, .home-ins-wrap, .home-faq-wrap, .home-cta-wrap, .footer-wrap {
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}

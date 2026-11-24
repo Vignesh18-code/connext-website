@@ -1,0 +1,257 @@
+/* ============================================================================
+   HEADER — a news ticker above a bar that sticks just off the top of the
+   viewport. Two header-heights down it takes a white fill and the wordmark
+   collapses from UNITEDCARRIERS to UC; on dark sections it goes transparent
+   with white type; scrolling down hides it, scrolling up brings it back.
+   ========================================================================== */
+
+.header {
+  position: sticky;
+  top: -4.5rem;
+  z-index: 100;
+  width: 100%;
+  margin-bottom: -11.9rem;
+  pointer-events: none;
+  color: var(--content-main);
+  transition: opacity .35s cubic-bezier(.445, .05, .55, .95), transform .35s;
+}
+.header.on-loader { opacity: 0; }
+.header.on-hide { pointer-events: none; transform: translateY(-101%); }
+
+/* `display: contents` keeps the slot out of the box tree but it still forms
+   the inheritance parent — it has to restate `color` so the dark tokens it
+   declares actually reach the logo and links */
+.header-slot { display: contents; color: var(--content-main); }
+
+/* --- news ticker ---------------------------------------------------------- */
+.related-news { position: relative; z-index: 2; width: 100%; color: var(--content-soft); }
+.related-news-inner {
+  grid-area: 1 / 2 / 2 / -2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: 1.5rem;
+  border-bottom: var(--border-size) solid var(--border-light);
+  overflow: hidden;
+}
+.related-news-cms-wrap {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .4rem;
+  width: calc(var(--container-one-column) * 4 + var(--container-column-gap) * 3);
+}
+.related-news-label { flex: none; }
+/* the negative margins let the taller line box overflow the bar's padding */
+.related-news-cms {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  height: 2.08rem;
+  margin-block: -1.5rem;
+  overflow: hidden;
+}
+.related-news-list { display: grid; grid-template-columns: 1fr; grid-template-rows: auto; width: 100%; }
+.related-news-item { grid-area: 1 / 1; display: flex; justify-content: flex-start; align-items: center; pointer-events: none; }
+.related-news-item.active { pointer-events: auto; }
+.related-news-link { color: inherit; text-decoration: none; pointer-events: auto; transition: color .4s; }
+/* the rotating headline fills its masked row; the utility links beside it
+   size to their own text */
+.related-news-item .related-news-link { display: block; width: 100%; overflow: hidden; }
+.related-news-title {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-block: .2rem;
+  opacity: 1;
+  transform: translateY(100%);
+  transition: transform .45s;
+}
+.related-news-item.active    .related-news-title { transform: translateY(0%); }
+.related-news-item.de-active .related-news-title { transform: translateY(-100%); }
+.related-news-links { display: flex; justify-content: center; align-items: center; gap: 1.2rem; flex: none; pointer-events: auto; }
+.related-news-links a { color: inherit; text-decoration: none; }
+.txt-clamp.clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* --- the bar -------------------------------------------------------------- */
+.header-inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding-block: 1.6rem;
+  transition: background-color .4s, color .4s, transform .4s;
+}
+
+.header-logo {
+  grid-area: 1 / 2 / 2 / 4;
+  place-self: start;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: .24rem;
+  margin-top: 1.6rem;
+  margin-right: -2rem;
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+/* the wordmark rides a collapsing grid track, so UNITEDCARRIERS shrinks to UC */
+.header-logo .header-logo-char {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: auto 1fr;
+  transition: grid-template-columns .5s ease .3s;
+}
+.header-logo .header-logo-char-single { display: flex; justify-content: center; align-items: center; width: 1.5rem; overflow: hidden; }
+.header-logo .header-logo-char-full { display: flex; justify-content: center; align-items: center; width: 7.005rem; overflow: hidden; transition: width .45s ease .3s; }
+.header-logo .header-logo-char-full.is-last { width: 10.483rem; }
+.header-logo .header-logo-char-full-inner { height: 1.6rem; padding-left: .2rem; }
+/* the mobile mark stays in the flex row on desktop, where its `height:100%`
+   svg resolves to zero width — the line box it leaves behind is what sets the
+   logo's height, and therefore the header's */
+.header .header-logo-mb { display: block; }
+
+.header.on-scroll .header-logo-char { grid-template-columns: auto 0fr; }
+.header.on-scroll .header-logo-char-full { width: 0; }
+
+/* --- menu ----------------------------------------------------------------- */
+.header-menu { grid-area: 1 / 6 / 2 / 9; align-self: center; position: relative; top: 0; left: 0; }
+.header-menu-toggle-wrap {
+  position: relative;
+  z-index: 15;
+  margin-top: -.5rem;
+  margin-bottom: -.5rem;
+  margin-left: -3rem;
+  padding: .5rem 0 .5rem 3rem;
+}
+.header-menu-toggle {
+  position: relative;
+  display: flex;
+  gap: .8rem;
+  margin: -.5rem;
+  padding: 1.5rem .5rem 1.5rem 4rem;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color .3s, opacity .3s;
+}
+.header-menu-toggle-dots { position: absolute; top: 50%; right: calc(100% - 3.2rem); transform: translateY(-50%); transition: opacity .15s ease; }
+.header-menu-toggle-dots-inner {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: .2rem;
+  opacity: 1;
+  transform: translate(0, 0%);
+  transition: transform .4s cubic-bezier(.66, 0, .15, 1), opacity .3s;
+}
+.header-menu-toggle-dot { flex: none; width: .4rem; height: .4rem; border-radius: 50%; background-color: currentColor; }
+.header-menu-toggle-dot:nth-child(1),
+.header-menu-toggle-dot:nth-child(2) { display: none; }
+.header-menu-toggle-dot:nth-child(3) { opacity: .24; }
+.header-menu-toggle-dot:nth-child(4) { opacity: .5; }
+.header-menu-toggle-dot:nth-child(5) { opacity: .7; }
+
+.header-menu-toggle-text { display: grid; overflow: hidden; }
+.header-menu-toggle-text-inner { display: grid; transform: translate(0, 0%); transition: transform .4s cubic-bezier(.66, 0, .15, 1); }
+.header-menu-toggle-text-inner > * { grid-area: 1 / 1; transition: opacity .3s; }
+.header-menu-toggle-text-close { opacity: 0; }
+
+.header.show-menu .header-menu-toggle-dots-inner,
+.header.show-menu .header-menu-toggle-text-inner { transform: translate(0, 105%); }
+.header.show-menu .header-menu-toggle-dots-inner { opacity: 0; }
+.header.show-menu .header-menu-toggle { pointer-events: none; }
+.header-menu.active .header-menu-toggle-menu { opacity: 0; }
+.header-menu.active .header-menu-toggle-text-close { opacity: 1; }
+
+.header-menu-list {
+  position: absolute;
+  top: 0;
+  left: 3.8rem;
+  z-index: 10;
+  display: flex;
+  flex-flow: column;
+  row-gap: 2.4rem;
+  padding-top: .8rem;
+  color: var(--m-white);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .4s;
+}
+.header.show-menu .header-menu-list { opacity: 1; pointer-events: auto; }
+.header-link-wrap { display: flex; overflow: hidden; }
+.header-link { color: inherit; text-decoration: none; transform: translateY(-105%); transition: transform .4s cubic-bezier(.66, 0, .15, 1); }
+.header.show-menu .header-link { transform: translate(0, 0%); }
+.header-menu-list .header-link-wrap:nth-child(2) .header-link { transition-delay: .04s; }
+.header-menu-list .header-link-wrap:nth-child(3) .header-link { transition-delay: .08s; }
+.header-menu-list .header-link-wrap:nth-child(4) .header-link { transition-delay: .12s; }
+.header-menu-list .header-link-wrap:nth-child(5) .header-link { transition-delay: .16s; }
+.header-menu-list .header-link-wrap:nth-child(6) .header-link { transition-delay: .2s; }
+
+/* --- dropdown ------------------------------------------------------------- */
+.header-dropdown {
+  position: absolute;
+  top: -2.6rem;
+  left: -1.2rem;
+  z-index: 10;
+  display: grid;
+  opacity: 0;
+  pointer-events: none;
+  color: var(--m-white);
+  transition: opacity .4s;
+}
+.header-dropdown > * { grid-area: 1 / 1; }
+.header.on-open-nav .header-dropdown { opacity: 1; pointer-events: auto; }
+.header-dropdown-inner { position: relative; z-index: 3; padding: 7.6rem 4.8rem 2.4rem; }
+.header-dropdown-line { width: 100%; height: var(--border-size); background-color: #ffffff29; }
+.header-dropdown-body { width: auto; padding-block: 2rem; }
+.header-dropdown-body-inner { display: flex; flex-flow: column; gap: 1.2rem; }
+.header-dropdown-link { display: block; color: #fff9; text-transform: uppercase; text-decoration: none; overflow: hidden; transition: color .4s; }
+.header-dropdown-link:hover { color: var(--m-white); }
+.header-dropdown-bg { z-index: 1; background-image: linear-gradient(#111, #111c), linear-gradient(#0003, #0003); }
+
+/* --- right-hand side ------------------------------------------------------ */
+.header-linkedin {
+  grid-area: 1 / 12 / 2 / 14;
+  align-self: center;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity .4s;
+}
+.header.on-scroll .header-linkedin { opacity: 1; }
+.header-btn { grid-area: 1 / 13 / 2 / -2; place-self: start end; color: inherit; pointer-events: auto; }
+.header-btn .btn { width: fit-content; flex: 0 0 auto; }
+
+/* --- surface states ------------------------------------------------------- */
+.header.on-scroll .header-inner { background-color: #fff; color: #111; }
+.header.on-scroll.on-dark .header-inner { background-color: transparent; color: #fff; }
+.header.on-scroll:not(.on-dark) .btn {
+  background: var(--m-black);
+  border-color: var(--m-black);
+  color: var(--m-white);
+}
+.header.on-scroll:not(.on-dark) .btn:hover { background: var(--secondary); border-color: var(--secondary); }
+
+@media (max-width: 1200px) {
+  .header-menu { grid-column: 4 / 6; }
+  .header-linkedin { display: none; }
+  .header-btn { grid-column: 6 / -2; }
+}
+@media (max-width: 767px) {
+  .header { margin-bottom: -9rem; }
+  .related-news-inner { padding-block: 1.25rem; }
+  .related-news-cms-wrap { display: none; }
+  .related-news-links { justify-content: space-between; width: 100%; }
+  .related-news-link-item { flex: 1; }
+  .header-btn { display: none; }
+  .header-menu { grid-column: 6 / -2; justify-self: end; }
+  .header .header-logo-char { display: none; }
+  .header .header-logo-mb { width: 100%; height: 1.6rem; }
+  .header.on-scroll .header-inner { padding-top: 1.2rem; }
+  .header-menu-list { left: auto; right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .header, .header-inner, .header-link, .related-news-title { transition-duration: .01ms !important; }
+}

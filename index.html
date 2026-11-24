@@ -1,0 +1,792 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>United Carriers — Hero Globe (1:1 rebuild)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <!-- ============================ NAVBAR ============================ -->
+  <header class="site-nav on-loader">
+    <div class="site-nav-inner">
+      <div class="site-nav-bar">
+        <span class="site-nav-sheen" aria-hidden="true"></span>
+        <!-- thin green gradient border; its path follows the bar's flared
+             shape and is drawn by src/sections/navbar.js -->
+        <svg class="site-nav-border" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="site-nav-border-gradient" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#00C757" stop-opacity="0.15" />
+              <stop offset="0.2" stop-color="#00C757" />
+              <stop offset="0.5" stop-color="#8dffc4" />
+              <stop offset="0.8" stop-color="#00C757" />
+              <stop offset="1" stop-color="#00C757" stop-opacity="0.15" />
+            </linearGradient>
+          </defs>
+          <path stroke="url(#site-nav-border-gradient)" />
+        </svg>
+
+        <a class="site-nav-logo" href="/"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
+
+        <nav class="site-nav-links" aria-label="Main navigation">
+          <a class="site-nav-link" href="/about">About Us</a>
+          <a class="site-nav-link" href="/safety">Safety</a>
+          <a class="site-nav-link" href="/careers">Careers</a>
+        </nav>
+
+        <div class="site-nav-actions">
+          <a class="site-nav-contact" href="/contact">Contact Us</a>
+          <button class="site-nav-download" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg><span>Download</span></button>
+        </div>
+
+        <button class="site-nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-nav-panel"><svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16" /><path d="M4 6h16" /><path d="M4 18h16" /></svg><svg class="icon-close" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg></button>
+      </div>
+
+      <div class="site-nav-panel" id="site-nav-panel">
+        <div class="site-nav-panel-card">
+          <div class="site-nav-panel-body">
+            <a class="site-nav-panel-link" href="/about">About Us</a>
+            <a class="site-nav-panel-link" href="/safety">Safety</a>
+            <a class="site-nav-panel-link" href="/careers">Careers</a>
+            <div class="site-nav-panel-actions">
+              <a class="site-nav-panel-contact" href="/contact">Contact Us</a>
+              <button class="site-nav-panel-download" type="button"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg><span>Download</span></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       HERO SECTION  (mirrors .home-hero on unitedcarriers.com)
+       ============================================================ -->
+  <div class="home-hero-wrap">
+  <section class="home-hero" data-section="dark">
+
+    <!-- starfield background (their .home-hero has star.avif / hero-blur.png layers) -->
+    <img class="hero-stars" src="/assets/star.avif" alt="" aria-hidden="true" />
+
+    <!-- ---- THE GLOBE ---------------------------------------------------------
+         Layer 1: .home-hero-globe-shadow-grp  = pure-CSS orange/blue atmosphere
+         Layer 2: #globe <canvas>              = three.js dot globe (transparent)
+         Layer 3: .globe-label divs            = CSS2DRenderer country chips
+    --------------------------------------------------------------------------- -->
+    <div class="home-hero-globe" id="globeWrap">
+      <canvas id="globe" class="home-hero-canvas" role="img" aria-label="Animated Chennai coverage globe with neighbourhood locations and illustrative rider routes"></canvas>
+
+      <div class="home-hero-globe-shadow-grp" aria-hidden="true">
+        <div class="home-hero-globe-shadow orange"></div>
+        <div class="home-hero-globe-shadow blue"></div>
+        <div class="home-hero-globe-shadow blue-plus"></div>
+        <div class="home-hero-globe-shadow orange-plus"></div>
+        <div class="home-hero-globe-blur"><img src="/assets/start-blur-green.avif" alt="" /></div>
+      </div>
+    </div>
+
+    <!-- ---- HERO COPY (left side) ------------------------------------------ -->
+    <div class="hero-copy">
+      <p class="hero-eyebrow hero-anim" style="--d:0">Chennai's Business Freight Connection</p>
+      <h1 class="hero-title">
+        <span class="hero-line"><span class="hero-line-in" style="--d:1">Your Goods.</span></span>
+        <span class="hero-line"><span class="hero-line-in" style="--d:2">Your Business.</span></span>
+        <span class="hero-line"><span class="hero-line-in is-accent" style="--d:3">Our Move.</span></span>
+      </h1>
+      <p class="hero-desc hero-anim" style="--d:4">From market pickups to shop deliveries, Connext helps Chennai businesses move goods with suitable vehicles, upfront pricing and convenient app-based booking.</p>
+      <div class="hero-actions hero-anim" style="--d:5">
+        <a class="hero-btn hero-btn-primary" href="#download">
+          <span>Download Connext</span>
+          <svg class="hero-btn-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
+        </a>
+        <a class="hero-btn hero-btn-ghost" href="/contact"><span>Talk to Our Team</span></a>
+      </div>
+      <p class="hero-tagline hero-anim" style="--d:6">Connected by every move <span aria-hidden="true">·</span> Chennai, India</p>
+    </div>
+
+  </section>
+  </div>
+
+
+
+  <!-- ============================ THE PICKUP ============================ -->
+  <div class="home-pickup-wrap">
+    <section class="home-pickup" data-section="dark" aria-labelledby="pickup-title">
+      <div class="pickup-inner">
+        <div class="pickup-copy">
+          <p class="pickup-eyebrow pk-anim" style="--d:0">The pickup</p>
+          <h2 class="pickup-title" id="pickup-title">
+            <span class="pk-line"><span class="pk-line-in" style="--d:1">Stock ready.</span></span>
+            <span class="pk-line"><span class="pk-line-in is-accent" style="--d:2">Transport sorted.</span></span>
+          </h2>
+          <p class="pickup-desc pk-anim" style="--d:3">Your goods are packed. Your next delivery is waiting. Book the right vehicle, review the fare and confirm your trip from your phone.</p>
+        </div>
+
+        <div class="pickup-visual pk-anim" style="--d:2">
+          <svg class="pickup-scene" viewBox="0 0 660 490" role="img" aria-label="A Connext truck pulls up outside a row of shops where packed boxes are waiting for pickup">
+            <defs>
+              <linearGradient id="pk-sky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#0c1714" />
+                <stop offset="1" stop-color="#132320" />
+              </linearGradient>
+              <radialGradient id="pk-beam" cx="0" cy=".5" r="1">
+                <stop offset="0" stop-color="#fff4c9" stop-opacity=".55" />
+                <stop offset="1" stop-color="#fff4c9" stop-opacity="0" />
+              </radialGradient>
+            </defs>
+            <rect width="660" height="490" fill="url(#pk-sky)" />
+            <g class="pk-shops">
+          <g class="pk-shop">
+            <rect x="1" y="106" width="176" height="276" fill="#2b2620" stroke="#34433d" stroke-width="3" />
+            <rect x="1" y="106" width="176" height="40" fill="#3a3128" />
+            <rect x="1" y="146" width="176" height="3" fill="#000" opacity=".25" />
+            <rect x="20" y="236" width="136" height="104" fill="#0b1317" stroke="#d9e7df" stroke-opacity=".55" stroke-width="4" />
+            <rect class="pk-lit" x="72" y="240" width="30" height="96" fill="#f3c27e" style="--i:0" />
+            <rect x="88" y="240" width="3" height="96" fill="#0b1317" />
+          </g>
+          <g class="pk-shop">
+            <rect x="183" y="106" width="176" height="276" fill="#1c2a26" stroke="#34433d" stroke-width="3" />
+            <rect x="183" y="106" width="176" height="40" fill="#243833" />
+            <rect x="183" y="146" width="176" height="3" fill="#000" opacity=".25" />
+            <rect x="202" y="236" width="136" height="104" fill="#0b1317" stroke="#d9e7df" stroke-opacity=".55" stroke-width="4" />
+            <rect class="pk-lit" x="254" y="240" width="30" height="96" fill="#f3c27e" style="--i:1" />
+            <rect x="270" y="240" width="3" height="96" fill="#0b1317" />
+          </g>
+          <g class="pk-shop">
+            <rect x="365" y="106" width="176" height="276" fill="#2c241e" stroke="#34433d" stroke-width="3" />
+            <rect x="365" y="106" width="176" height="40" fill="#3b3026" />
+            <rect x="365" y="146" width="176" height="3" fill="#000" opacity=".25" />
+            <rect x="384" y="236" width="136" height="104" fill="#0b1317" stroke="#d9e7df" stroke-opacity=".55" stroke-width="4" />
+            <rect class="pk-lit" x="436" y="240" width="30" height="96" fill="#f3c27e" style="--i:2" />
+            <rect x="452" y="240" width="3" height="96" fill="#0b1317" />
+          </g>
+          <g class="pk-shop">
+            <rect x="547" y="106" width="176" height="276" fill="#1e2532" stroke="#34433d" stroke-width="3" />
+            <rect x="547" y="106" width="176" height="40" fill="#283143" />
+            <rect x="547" y="146" width="176" height="3" fill="#000" opacity=".25" />
+            <rect x="566" y="236" width="136" height="104" fill="#0b1317" stroke="#d9e7df" stroke-opacity=".55" stroke-width="4" />
+            <rect class="pk-lit" x="618" y="240" width="30" height="96" fill="#f3c27e" style="--i:3" />
+            <rect x="634" y="240" width="3" height="96" fill="#0b1317" />
+          </g>
+            </g>
+            <!-- road -->
+            <rect y="380" width="660" height="110" fill="#14191b" />
+            <rect y="380" width="660" height="6" fill="#26302f" />
+            <line class="pk-dash" x1="0" y1="440" x2="660" y2="440" stroke="#cfd8d3" stroke-opacity=".55" stroke-width="3" stroke-dasharray="10 7" />
+            <!-- parcels waiting at the kerb -->
+            <g class="pk-boxes">
+              <rect x="80" y="320" width="48" height="60" fill="#a8783f" />
+              <rect x="80" y="320" width="48" height="8" fill="#c08d52" />
+              <rect x="126" y="298" width="80" height="82" fill="#b8874c" />
+              <rect x="126" y="298" width="80" height="9" fill="#cf9d60" />
+              <rect x="163" y="298" width="6" height="82" fill="#000" opacity=".12" />
+            </g>
+            <!-- the truck: positioned by the outer group, driven in by the inner one -->
+            <g transform="translate(212 290)">
+              <g class="pk-truck">
+                <ellipse cx="160" cy="146" rx="170" ry="9" fill="#000" opacity=".45" />
+                <path class="pk-beam" d="M318 92 L470 60 L470 140 Z" fill="url(#pk-beam)" />
+                <rect width="226" height="120" rx="9" fill="#13242c" />
+                <rect width="226" height="120" rx="9" fill="none" stroke="#ffffff" stroke-opacity=".08" stroke-width="2" />
+                <text x="113" y="70" text-anchor="middle" fill="#fff" font-family="Helvetica Neue, Arial, sans-serif" font-weight="700" font-size="27" letter-spacing=".5">CONNEXT</text>
+                <rect x="230" y="36" width="88" height="80" rx="11" fill="#22c55e" />
+                <rect x="250" y="47" width="46" height="31" rx="3" fill="#bff3d6" />
+                <rect class="pk-light" x="312" y="88" width="6" height="11" rx="2" fill="#fff4c9" />
+                <g class="pk-wheel"><circle cx="62" cy="122" r="22" fill="#0a0e10" stroke="#9aa6a1" stroke-width="6" /><rect x="60" y="104" width="4" height="36" fill="#3a4541" /></g>
+                <g class="pk-wheel"><circle cx="268" cy="122" r="22" fill="#0a0e10" stroke="#9aa6a1" stroke-width="6" /><rect x="266" y="104" width="4" height="36" fill="#3a4541" /></g>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================ THE CITY KEEPS MOVING ============================ -->
+  <div class="home-city-wrap">
+    <section class="home-city" data-section="dark" aria-labelledby="city-title">
+      <div class="city-copy">
+        <p class="city-eyebrow pk-anim" style="--d:0">The city keeps moving</p>
+        <h2 class="city-title" id="city-title">
+          <span class="pk-line"><span class="pk-line-in" style="--d:1">From market to storefront.</span></span>
+          <span class="pk-line"><span class="pk-line-in is-accent" style="--d:2">One connected journey.</span></span>
+        </h2>
+        <p class="city-desc pk-anim" style="--d:3">Wholesale pickups, retail restocking and business deliveries &mdash; Connext helps you arrange goods movement across supported Chennai locations.</p>
+      </div>
+
+      <div class="city-skyline" aria-hidden="true">
+        <div class="cy-layer cy-back"><span class="cy-b" style="--w:70;--h:139px;--i:0;--t:3.1s"></span><span class="cy-b has-step" style="--w:54;--h:188px;--i:1;--t:6.0s;--sw:46%;--sh:15px"></span><span class="cy-b has-step" style="--w:63;--h:124px;--i:2;--t:4.3s;--sw:41%;--sh:16px"></span><span class="cy-b" style="--w:55;--h:190px;--i:3;--t:3.5s"></span><span class="cy-b" style="--w:110;--h:148px;--i:4;--t:3.1s"></span><span class="cy-b" style="--w:86;--h:194px;--i:5;--t:4.2s"></span><span class="cy-b" style="--w:52;--h:191px;--i:6;--t:4.6s"></span><span class="cy-b" style="--w:76;--h:138px;--i:7;--t:4.7s"></span><span class="cy-b has-step" style="--w:85;--h:207px;--i:8;--t:4.0s;--sw:46%;--sh:32px"></span><span class="cy-b" style="--w:73;--h:132px;--i:9;--t:3.2s"></span><span class="cy-b" style="--w:86;--h:127px;--i:10;--t:5.9s"></span><span class="cy-b" style="--w:93;--h:188px;--i:11;--t:4.8s"></span><span class="cy-b" style="--w:79;--h:194px;--i:12;--t:5.1s"></span><span class="cy-b" style="--w:69;--h:151px;--i:13;--t:4.3s"></span><span class="cy-b has-step" style="--w:55;--h:193px;--i:14;--t:5.6s;--sw:43%;--sh:24px"></span><span class="cy-b" style="--w:68;--h:197px;--i:15;--t:3.5s"></span><span class="cy-b has-step" style="--w:82;--h:173px;--i:16;--t:5.9s;--sw:38%;--sh:18px"></span><span class="cy-b" style="--w:76;--h:125px;--i:17;--t:3.2s"></span><span class="cy-b" style="--w:98;--h:191px;--i:18;--t:4.8s"></span><span class="cy-b" style="--w:71;--h:208px;--i:19;--t:5.9s"></span><span class="cy-b has-step" style="--w:87;--h:178px;--i:20;--t:5.8s;--sw:30%;--sh:22px"></span><span class="cy-b has-step" style="--w:94;--h:205px;--i:21;--t:5.6s;--sw:37%;--sh:34px"></span></div>
+        <div class="cy-layer cy-front"><span class="cy-b" style="--w:92;--h:101px;--i:0;--t:5.0s"></span><span class="cy-b is-lit has-step" style="--w:58;--h:111px;--i:1;--t:3.1s;--sw:31%;--sh:29px"></span><span class="cy-b has-step" style="--w:83;--h:88px;--i:2;--t:5.3s;--sw:35%;--sh:26px"></span><span class="cy-b has-step" style="--w:119;--h:62px;--i:3;--t:4.5s;--sw:40%;--sh:31px"></span><span class="cy-b is-lit" style="--w:73;--h:107px;--i:4;--t:4.5s"><i class="cy-pin" aria-hidden="true"></i></span><span class="cy-b" style="--w:109;--h:97px;--i:5;--t:5.2s"></span><span class="cy-b has-step" style="--w:85;--h:71px;--i:6;--t:4.2s;--sw:32%;--sh:21px"></span><span class="cy-b is-lit" style="--w:57;--h:114px;--i:7;--t:3.9s"></span><span class="cy-b has-step" style="--w:89;--h:88px;--i:8;--t:5.1s;--sw:41%;--sh:31px"></span><span class="cy-b" style="--w:96;--h:68px;--i:9;--t:6.0s"></span><span class="cy-b is-lit" style="--w:62;--h:110px;--i:10;--t:5.3s"></span><span class="cy-b has-step" style="--w:106;--h:103px;--i:11;--t:5.3s;--sw:43%;--sh:34px"></span><span class="cy-b has-step" style="--w:63;--h:76px;--i:12;--t:3.8s;--sw:34%;--sh:28px"></span><span class="cy-b is-lit" style="--w:70;--h:95px;--i:13;--t:3.4s"><i class="cy-pin" aria-hidden="true"></i></span><span class="cy-b" style="--w:56;--h:71px;--i:14;--t:5.1s"></span><span class="cy-b" style="--w:59;--h:61px;--i:15;--t:5.2s"></span><span class="cy-b is-lit" style="--w:75;--h:84px;--i:16;--t:5.1s"></span><span class="cy-b has-step" style="--w:116;--h:67px;--i:17;--t:5.8s;--sw:43%;--sh:28px"></span><span class="cy-b has-step" style="--w:117;--h:91px;--i:18;--t:4.4s;--sw:31%;--sh:24px"></span><span class="cy-b is-lit" style="--w:117;--h:72px;--i:19;--t:4.1s"></span><span class="cy-b" style="--w:102;--h:70px;--i:20;--t:2.9s"></span><span class="cy-b" style="--w:94;--h:63px;--i:21;--t:4.4s"><i class="cy-pin" aria-hidden="true"></i></span><span class="cy-b is-lit has-step" style="--w:102;--h:73px;--i:22;--t:6.0s;--sw:35%;--sh:31px"></span><span class="cy-b" style="--w:98;--h:80px;--i:23;--t:4.0s"></span><span class="cy-b" style="--w:86;--h:103px;--i:24;--t:4.2s"></span><span class="cy-b is-lit" style="--w:81;--h:118px;--i:25;--t:2.9s"></span></div>
+        <div class="cy-street"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================== SERVICES =========================== -->
+  <div class="home-service-wrap" id="services">
+    <section class="home-service is-dark-panels">
+      <div class="home-service-speed" aria-hidden="true">
+        <div class="home-service-speed-inner">
+          <div class="home-service-speed-number"><div data-speed class="txt mono fs-12">00</div></div>
+          <div class="txt mono fs-12">km/h</div>
+        </div>
+      </div>
+
+      <div class="container grid">
+        <!-- screen 1 — the pickups: one box, then three, one truck -->
+        <div class="home-service-first-screen">
+          <div class="home-service-stick-wrap first-screen">
+            <div class="home-service-empty-block first-screen"></div>
+            <div class="home-service-stick first-screen">
+              <div class="home-service-scene">
+                <div class="home-service-street" data-tallest="8.8">
+                  <p class="home-service-sr">A Connext truck collects one parcel from a shop, then three corporate boxes from an office, in a single trip. Two pickups, four parcels, one trip.</p>
+                  <div class="home-service-hud" aria-hidden="true">
+                    <div class="home-service-chip is-stop"><i class="dot"></i>
+                      <span class="txt mono fs-12 stop-1">Pickup 1</span><span class="txt mono fs-12 stop-2">Pickup 2</span>
+                    </div>
+                    <div class="home-service-chip is-count"><span class="txt mono fs-12">Parcels on board</span>
+                      <span class="home-service-count txt mono fs-12"><b>0</b><b>1</b><b>2</b><b>3</b><b>4</b></span>
+                    </div>
+                    <div class="home-service-chip is-trip"><i class="dot"></i><span class="txt mono fs-12">2 pickups · 4 parcels · 1 trip</span></div>
+                  </div>
+                  <div class="home-service-route" aria-hidden="true">
+                    <span class="txt mono fs-12 rt-lbl">Route</span>
+                    <div class="rt-track"><i class="rt-fill"></i><b class="rt-node n1"></b><b class="rt-node n2"></b><b class="rt-node n3"></b></div>
+                  </div>
+                  <div class="home-service-plus is-one" aria-hidden="true"><b>+1</b> parcel</div>
+                  <div class="home-service-plus is-three" aria-hidden="true"><b>+3</b> parcels</div>
+                  <div class="home-service-world" aria-hidden="true" data-gap="20">
+                    <div class="home-service-layer is-far">
+                      <div class="st bld" style="--x:-52.96;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-46.27;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-41.77;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-34.59;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-28.56;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-22.08;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-15.0;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-8.31;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-3.81;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:3.37;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:9.4;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:15.88;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:22.96;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:29.65;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:34.14;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:41.33;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:47.36;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:53.84;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+
+                    </div>
+                    <div class="home-service-footpath"></div>
+                    <div class="home-service-layer is-mid">
+                      <div class="st life" style="--x:-9.6;--y:0.25;--h:1.28;--ar:1.166;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-couple.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:-7.9;--y:0.25;--h:0.8;--ar:0.7439;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-menu.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:-7.2;--y:0.25;--h:1.23;--ar:1.2173;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-reader.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:4.9;--y:0.28;--h:1.6;--ar:0.4908;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p08.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:6.3;--y:0.28;--h:1.68;--ar:0.3447;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p04.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:7.4;--y:0.28;--h:1.73;--ar:0.3329;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p02.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:8.9;--y:0.28;--h:1.36;--ar:0.3211;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p12.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:9.6;--y:0.2;--h:2.3;--ar:0.9444;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cart.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:12.3;--y:0.28;--h:1.73;--ar:0.3539;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p11.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:13.0;--y:0.2;--h:1.05;--ar:1.3933;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-scooter.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:14.8;--y:0.28;--h:1.6;--ar:0.3671;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p10.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:16.0;--y:0.28;--h:1.69;--ar:0.3487;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p05.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:17.0;--y:0.28;--h:1.64;--ar:0.4026;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p01.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:18.4;--y:0.28;--h:1.72;--ar:0.5013;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p09.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:19.7;--y:0.28;--h:1.76;--ar:0.3566;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p07.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:20.8;--y:0.2;--h:1.1;--ar:1.6105;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-moto.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:22.8;--y:0.28;--h:1.75;--ar:0.3263;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p03.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:23.8;--y:0.28;--h:1.65;--ar:0.3329;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p06.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:24.6;--y:0.2;--h:1.05;--ar:1.7643;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-bicycle.avif" alt="" decoding="async" /></div>
+
+                    </div>
+                    <div class="home-service-streaks"><i style="--x:6;--y:0.35;--w:7;" data-k="1.15"></i><i style="--x:10;--y:0.9;--w:10;" data-k="1.0"></i><i style="--x:2;--y:1.5;--w:6;" data-k="1.3"></i><i style="--x:14;--y:2.1;--w:9;" data-k="0.9"></i><i style="--x:-3;--y:2.8;--w:8;" data-k="1.2"></i><i style="--x:12;--y:3.6;--w:12;" data-k="0.8"></i><i style="--x:-6;--y:4.4;--w:7;" data-k="1.1"></i><i style="--x:8;--y:5.3;--w:9;" data-k="0.85"></i></div>
+                    <div class="home-service-layer is-near">
+                      <div class="st shop" style="--x:-5.4;--y:0;--h:3.4;--ar:1.1473;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/places/shop-boutique.avif" alt="" decoding="async" /></div>
+<div class="st cust cust-offer" style="--x:-1.8;--y:0;--h:1.62;--ar:0.4205;--cx:0.288"><img class="st-img" src="/assets/parcel-story/1-street/people/customer-offer.avif" alt="" decoding="async" /></div>
+<div class="st cust cust-stand" style="--x:-1.8;--y:0;--h:1.62;--ar:0.21;--cx:0.389"><img class="st-img" src="/assets/parcel-story/1-street/people/customer-stand.avif" alt="" decoding="async" /></div>
+<div class="st office" style="--x:9.94;--y:0;--h:4.8;--ar:1.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/places/office-corporate.avif" alt="" decoding="async" /></div>
+<div class="st seller" style="--x:16.4;--y:0;--h:1.66;--ar:0.248;--cx:0.394"><img class="st-img" src="/assets/parcel-story/1-street/people/seller-corporate.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-1" style="--x:17.25;--y:0;--h:0.38;--ar:0.9732;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp1.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-2" style="--x:17.7;--y:0;--h:0.46;--ar:0.8357;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp2.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-3" style="--x:18.15;--y:0;--h:0.42;--ar:0.8161;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp3.avif" alt="" decoding="async" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="home-service-land"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- screen 2 — the road -->
+        <div class="home-service-second-screen">
+          <div class="home-service-stick-wrap second-screen">
+            <div class="home-service-stick second-screen">
+              <div class="home-service-front">
+                <div class="home-service-truck">
+                  <div class="home-service-truck-inner">
+                    <div class="home-service-truck-full">
+                      <img class="img-df" src="/assets/parcel-story/2-truck-side/01-truck-complete.avif" alt="" />
+                    </div>
+                    <div class="home-service-truck-car-wrap">
+                      <div class="home-service-truck-seat" aria-hidden="true"><div class="st seat" style="--x:2.895;--y:1.09;--h:0.656;--ar:1.0309;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-driving.avif" alt="" decoding="async" /></div></div>
+                      <div class="home-service-truck-car">
+                        <img class="img-df" src="/assets/parcel-story/2-truck-side/01-truck-complete.avif" alt="" />
+                      </div>
+                      <div class="home-service-truck-wheel"><div class="home-service-truck-wheel-i wheel-1"><img class="img-df" src="/assets/parcel-story/2-truck-side/02-wheel-front.avif" alt="" /></div>
+<div class="home-service-truck-wheel-i wheel-2"><img class="img-df" src="/assets/parcel-story/2-truck-side/03-wheel-rear.avif" alt="" /></div>
+                      </div>
+                      <div class="home-service-truck-crew" aria-hidden="true"><div class="home-service-partner"><div class="st pose walk-l flip" style="--x:0;--y:0;--h:1.78;--ar:0.392;--cx:0.482"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-walk.avif" alt="" decoding="async" /></div>
+<div class="st pose recv-l flip" style="--x:0;--y:0;--h:1.78;--ar:0.3665;--cx:0.262"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-receive.avif" alt="" decoding="async" /></div>
+<div class="st pose carry-1" style="--x:0;--y:0;--h:1.78;--ar:0.4295;--cx:0.425"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-carry-1.avif" alt="" decoding="async" /></div>
+<div class="st pose place" style="--x:0;--y:0;--h:1.78;--ar:0.5365;--cx:0.199"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-place.avif" alt="" decoding="async" /></div>
+<div class="st pose walk-r" style="--x:0;--y:0;--h:1.78;--ar:0.392;--cx:0.482"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-walk.avif" alt="" decoding="async" /></div>
+<div class="st pose carry-3" style="--x:0;--y:0;--h:1.78;--ar:0.451;--cx:0.423"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-carry-3.avif" alt="" decoding="async" /></div></div></div>
+                    </div>
+                    <canvas class="home-service-truck-sq" aria-hidden="true"></canvas>
+                  </div>
+                </div>
+                <div class="home-service-label" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" height="100%" viewBox="0 0 3020 305" fill="currentColor" class="svg"><path d="M95.8464 304.013C74.88 304.013 49.4208 285.293 29.2032 262.08C11.9808 242.611 0 218.275 0 200.678V103.334C0 85.7376 11.9808 61.4016 29.2032 41.9328C49.4208 18.72 74.88 0 95.8464 0H190.195C211.162 0 236.621 18.72 256.838 41.9328C274.061 61.4016 286.042 85.7376 286.042 103.334V200.678C286.042 218.275 274.061 242.611 256.838 262.08C236.621 285.293 211.162 304.013 190.195 304.013H95.8464ZM166.234 245.606C177.091 245.606 189.634 238.68 199.181 229.133C211.162 217.152 220.147 199.93 220.147 185.702V118.31C220.147 104.083 211.162 86.8608 199.181 74.88C189.446 65.1456 177.091 58.4064 166.234 58.4064H119.808C108.95 58.4064 96.408 65.3328 86.8608 74.88C74.88 86.8608 65.8944 104.083 65.8944 118.31V185.702C65.8944 199.93 74.88 217.152 86.8608 229.133C96.408 238.68 108.95 245.606 119.808 245.606H166.234Z" fill="currentColor"></path><path d="M405.162 304.013C396.925 304.013 388.876 303.264 368.097 283.795L362.481 278.554C337.583 255.341 328.036 231.379 328.036 205.92V1.4976H392.433V184.205C392.433 204.422 396.738 214.906 405.724 224.64L409.655 228.946C420.887 241.301 430.621 244.858 441.853 244.858H465.815C477.047 244.858 486.781 241.301 498.013 228.946L501.945 224.64C510.93 214.906 515.236 204.422 515.236 184.205V1.4976H579.633V205.92C579.633 231.379 570.085 255.341 545.188 278.554L539.572 283.795C518.793 303.264 510.743 304.013 502.506 304.013H405.162Z" fill="currentColor"></path><path d="M626.874 302.515V1.4976H781.876C818.567 1.4976 854.51 41.184 854.51 69.6384V115.315C854.51 143.77 824.558 179.899 795.354 190.195V193.19L866.49 299.52V302.515H789.364L721.972 193.19H691.271V302.515H626.874ZM751.924 135.533C776.634 135.533 788.615 122.054 788.615 106.33V88.3584C788.615 71.136 776.634 59.1552 751.924 59.1552H691.271V135.533H751.924Z" fill="currentColor"></path><path d="M998.279 302.515V244.858H1128.57C1148.79 244.858 1165.26 236.246 1165.26 217.901V205.92C1165.26 187.949 1149.54 179.712 1128.57 179.712H1059.68C1022.24 179.712 990.791 136.282 990.791 113.069V65.1456C990.791 42.6816 1022.99 1.4976 1055.94 1.4976H1216.18V59.1552H1090.38C1069.42 59.1552 1056.69 69.6384 1056.69 83.1168V95.0976C1056.69 110.074 1070.16 122.054 1090.38 122.054H1160.77C1195.21 122.054 1231.16 155.75 1231.16 181.958V231.379C1231.16 262.829 1200.46 302.515 1166.01 302.515H998.279Z" fill="currentColor"></path><path d="M1339.16 244.858H1485.17V302.515H1274.76V1.4976H1483.68V59.1552H1339.16V119.059H1470.95V176.717H1339.16V244.858Z" fill="currentColor"></path><path d="M1529.24 302.515V1.4976H1684.24C1720.93 1.4976 1756.87 41.184 1756.87 69.6384V115.315C1756.87 143.77 1726.92 179.899 1697.72 190.195V193.19L1768.85 299.52V302.515H1691.73L1624.33 193.19H1593.63V302.515H1529.24ZM1654.29 135.533C1679 135.533 1690.98 122.054 1690.98 106.33V88.3584C1690.98 71.136 1679 59.1552 1654.29 59.1552H1593.63V135.533H1654.29Z" fill="currentColor"></path><path d="M1804.22 191.693C1798.23 183.456 1796.73 177.466 1796.73 166.982V1.4976H1861.13V151.258C1861.13 157.248 1862.25 160.618 1867.12 167.731L1924.78 252.346H1927.77L1985.43 167.731C1990.3 160.618 1991.42 157.248 1991.42 151.258V1.4976H2055.82V166.982C2055.82 177.466 2054.32 183.456 2048.33 191.693L1968.96 302.515H1883.59L1804.22 191.693Z" fill="currentColor"></path><path d="M2102.17 1.4976H2166.57V302.515H2102.17V1.4976Z" fill="currentColor"></path><path d="M2306.42 304.013C2285.45 304.013 2259.99 285.293 2239.77 262.08C2222.55 242.611 2210.57 218.275 2210.57 200.678V103.334C2210.57 85.7376 2222.55 61.4016 2239.77 41.9328C2259.99 18.72 2285.45 0 2306.42 0H2397.77C2418.74 0 2444.19 18.72 2464.41 41.9328C2481.63 61.4016 2491.37 85.7376 2492.87 103.334C2493.24 107.827 2493.62 113.818 2493.62 118.31H2426.22V117.562C2426.22 102.211 2417.24 86.8608 2405.26 74.88C2395.52 65.1456 2383.17 58.4064 2372.31 58.4064H2330.38C2319.52 58.4064 2306.98 65.3328 2297.43 74.88C2285.45 86.8608 2276.46 104.083 2276.46 118.31V185.702C2276.46 199.93 2285.45 217.152 2297.43 229.133C2306.98 238.68 2319.52 245.606 2330.38 245.606H2372.31C2383.17 245.606 2395.71 238.68 2405.26 229.133C2417.24 217.152 2426.22 201.802 2426.22 186.451V185.702H2493.62C2493.62 190.195 2493.24 196.186 2492.87 200.678C2491.37 218.275 2481.63 242.611 2464.41 262.08C2444.19 285.293 2418.74 304.013 2397.77 304.013H2306.42Z" fill="currentColor"></path><path d="M2599.1 244.858H2745.12V302.515H2534.71V1.4976H2743.62V59.1552H2599.1V119.059H2730.89V176.717H2599.1V244.858Z" fill="currentColor"></path><path d="M2786.19 302.515V244.858H2916.48C2936.69 244.858 2953.17 236.246 2953.17 217.901V205.92C2953.17 187.949 2937.44 179.712 2916.48 179.712H2847.59C2810.15 179.712 2778.7 136.282 2778.7 113.069V65.1456C2778.7 42.6816 2810.9 1.4976 2843.84 1.4976H3004.09V59.1552H2878.29C2857.32 59.1552 2844.59 69.6384 2844.59 83.1168V95.0976C2844.59 110.074 2858.07 122.054 2878.29 122.054H2948.68C2983.12 122.054 3019.06 155.75 3019.06 181.958V231.379C3019.06 262.829 2988.36 302.515 2953.92 302.515H2786.19Z" fill="currentColor"></path></svg></div>
+              </div>
+
+              <div class="home-service-main is-dark">
+                <div class="home-service-main-inner">
+                  <div class="home-service-text-wrap">
+                    <div class="home-service-title"><h2 class="heading h2">Different loads. <span class="cl-note">Different ways to move.</span></h2></div>
+                    <div class="home-service-sub">
+                      <div class="txt fs-18 fw-med">Two services are available today. Two more are being developed.<br /><br />Follow the same road to find the transport option that fits your requirement.</div>
+                    </div>
+                  </div>
+                  <div class="home-service-cms">
+                    <div class="home-service-list">
+              <div class="home-service-item is-live">
+                <div class="home-service-item-ic"><img class="img-df" src="/assets/websiteimages/06-service-icons/domestic-interstate-transport.png" alt="" loading="lazy" /></div>
+                <div class="home-service-item-tag"><div class="txt mono fs-12">Available now · 01</div></div>
+                <div class="home-service-item-title"><div class="heading h6"><h3>ON-DEMAND<br />DELIVERIES</h3></div></div>
+                <div class="home-service-item-desc"><div class="txt fs-16">Need goods moved today? Book suitable transport when you need it and review the fare before confirming.</div></div>
+              </div>
+
+              <div class="home-service-item is-live">
+                <div class="home-service-item-ic"><img class="img-df" src="/assets/websiteimages/06-service-icons/project-cargo.png" alt="" loading="lazy" /></div>
+                <div class="home-service-item-tag"><div class="txt mono fs-12">Available now · 02</div></div>
+                <div class="home-service-item-title"><div class="heading h6"><h3>DEDICATED<br />TRANSPORT</h3></div></div>
+                <div class="home-service-item-desc"><div class="txt fs-16">For consignments that need exclusive space, reserve the whole vehicle for your trip.</div></div>
+              </div>
+
+              <div class="home-service-item is-soon">
+                <div class="home-service-item-ic"><img class="img-df" src="/assets/websiteimages/07-why-icons/why-2.png" alt="" loading="lazy" /></div>
+                <div class="home-service-item-tag"><div class="txt mono fs-12">Coming soon · 03</div></div>
+                <div class="home-service-item-title"><div class="heading h6"><h3>SCHEDULED<br />FREIGHT</h3></div></div>
+                <div class="home-service-item-desc"><div class="txt fs-16">Future fixed-route freight options for businesses planning regular market and stock movements.</div></div>
+              </div>
+
+              <div class="home-service-item is-soon">
+                <div class="home-service-item-ic"><img class="img-df" src="/assets/websiteimages/06-service-icons/warehousing-3pl.png" alt="" loading="lazy" /></div>
+                <div class="home-service-item-tag"><div class="txt mono fs-12">Coming soon · 04</div></div>
+                <div class="home-service-item-title"><div class="heading h6"><h3>SHARED<br />FREIGHT</h3></div></div>
+                <div class="home-service-item-desc"><div class="txt fs-16">Share suitable cargo capacity with compatible consignments and book the space your goods need.</div></div>
+              </div>
+                    </div>
+                  </div>
+                  <div class="home-service-road-big" aria-hidden="true"><div class="home-service-road-big-img"></div></div>
+                </div>
+                <div class="home-service-btn-wrap">
+                  <a href="/services" class="home-service-btn">
+                    <div data-link-random data-is-btn class="btn"><div class="btn-txt"><div class="txt mono fs-12">Our services</div></div></div>
+                  </a>
+                </div>
+                <div class="home-service-main-road top" aria-hidden="true"></div>
+                <div class="home-service-main-road bot" aria-hidden="true"></div>
+              </div>
+            </div>
+            <div class="home-service-empty-block second-screen"></div>
+          </div>
+        </div>
+
+        <!-- screen 3 — overhead -->
+        <div class="home-service-third-screen">
+          <div class="home-service-new-truck-wrap" aria-hidden="true">
+            <div class="home-service-new-truck-stick">
+              <div class="home-service-new-truck-rot">
+                <div class="home-service-new-truck">
+                  <div class="home-service-new-truck-inner">
+                    <img class="img-df" src="/assets/parcel-story/4-truck-top/01-truck-top.avif" alt="" loading="lazy" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="home-service-road-main" aria-hidden="true">
+            <div class="container grid">
+              <div class="home-service-road-wrap">
+                <div class="home-service-road">
+                  <div class="home-service-road-inner">
+                    <div class="home-service-road-center"><img src="/assets/websiteimages/05-journey/road/road-curve-center.svg" alt="" /></div>
+                  </div>
+                  <div class="home-service-road-left-wrap">
+                    <div class="home-service-road-left"><div class="home-service-road-hor-line"></div></div>
+                    <div class="home-service-road-left-white"></div>
+                  </div>
+                  <div class="home-service-road-right"><div class="home-service-road-hor-line"></div></div>
+                  <div class="home-service-road-bot"><div class="home-service-road-ver-line"></div></div>
+                </div>
+              </div>
+              <div class="home-service-road-stick"></div>
+            </div>
+          </div>
+
+          <!-- the road fades out below the parked truck -->
+          <div class="home-service-road-end" aria-hidden="true"></div>
+
+          <div class="home-service-sub-content">
+            <div class="container grid">
+              <!-- how Connext works: three steps the truck drives past -->
+              <div class="home-service-stick-wrap third-screen" id="how-it-works">
+                <div class="home-service-stick third-screen">
+                  <div class="home-service-title sub">
+                    <div class="home-service-eyebrow"><div class="txt mono fs-12">How Connext works</div></div>
+                    <h2 class="heading h2">Three steps.<br /><span class="cl-note">One simpler way to deliver.</span></h2>
+                  </div>
+                  <div class="home-service-desc sub">
+                    <div class="txt fs-18 fw-med">You&rsquo;ll review the booking price before accepting the trip.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="home-service-sub-wrap">
+                <div class="home-service-sub-list is-steps">
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic"><img class="img-df" src="/assets/websiteimages/06-service-icons/features-desktop/feature-1.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-tag"><div class="txt mono fs-12">Step 01</div></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">TELL US<br />WHAT'S MOVING</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Add your goods, pickup address, destination and requested pickup details.</div></div>
+            </div>
+
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic is-invert"><img class="img-df" src="/assets/websiteimages/07-why-icons/why-4.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-tag"><div class="txt mono fs-12">Step 02</div></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">SEE PRICE.<br />CONFIRM.</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Choose an available vehicle, review the fare and confirm your booking.</div></div>
+            </div>
+
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic is-invert"><img class="img-df" src="/assets/websiteimages/07-why-icons/why-2.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-tag"><div class="txt mono fs-12">Step 03</div></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">HAND OVER<br />&amp; FOLLOW</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Complete pickup verification and follow trip updates through the app.</div></div>
+            </div>
+                </div>
+              </div>
+
+              <!-- why Connext: the end of the road, where the truck parks -->
+              <div class="home-service-stick-wrap third-screen is-why" id="why-connext">
+                <div class="home-service-stick third-screen">
+                  <div class="home-service-title sub">
+                    <div class="home-service-eyebrow"><div class="txt mono fs-12">Why Connext</div></div>
+                    <h2 class="heading h2">Reliability at<br />every <span class="cl-green">milestone.</span></h2>
+                  </div>
+                  <div class="home-service-desc sub">
+                    <div class="txt fs-18 fw-med">Clear booking details and useful delivery visibility help you stay focused on your business, not repeated transport calls.</div>
+                  </div>
+                </div>
+              </div>
+              <div class="home-service-sub-wrap is-why">
+                <div class="home-service-sub-list is-why">
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic is-invert"><img class="img-df" src="/assets/websiteimages/07-why-icons/why-4.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">UPFRONT<br />FARE REVIEW</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Check your booking price before you confirm.</div></div>
+            </div>
+
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic is-invert"><img class="img-df" src="/assets/websiteimages/06-service-icons/project-cargo.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">SUITABLE TRANSPORT<br />CHOICES</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Choose from the cargo vehicles available for your load.</div></div>
+            </div>
+
+            <div class="home-service-sub-item">
+              <div class="home-service-sub-ic"><img class="img-df" src="/assets/websiteimages/06-service-icons/features-desktop/feature-1.png" alt="" loading="lazy" /></div>
+              <div class="home-service-sub-title"><h3 class="heading h6">TRIP<br />UPDATES</h3></div>
+              <div class="home-service-sub-desc"><div class="txt fs-16">Follow your booked delivery through the customer app.</div></div>
+            </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-service-mb"><div class="w-layout-blockcontainer container grid w-container"><div id="w-node-_70597fe7-5c5d-c94f-0970-56a35e13e9f7-c403df38" class="home-service-mb-first-screen"><div class="home-service-mb-street-run"><div class="home-service-mb-street-stick"><div class="home-service-mb-street-title"><h2 class="heading h2">Many pickups.<br><span class="cl-note">One truck.</span></h2></div><div class="home-service-street" data-tallest="8.8">
+                  <p class="home-service-sr">A Connext truck collects one parcel from a shop, then three corporate boxes from an office, in a single trip. Two pickups, four parcels, one trip.</p>
+                  <div class="home-service-hud" aria-hidden="true">
+                    <div class="home-service-chip is-stop"><i class="dot"></i>
+                      <span class="txt mono fs-12 stop-1">Pickup 1</span><span class="txt mono fs-12 stop-2">Pickup 2</span>
+                    </div>
+                    <div class="home-service-chip is-count"><span class="txt mono fs-12">Parcels on board</span>
+                      <span class="home-service-count txt mono fs-12"><b>0</b><b>1</b><b>2</b><b>3</b><b>4</b></span>
+                    </div>
+                    <div class="home-service-chip is-trip"><i class="dot"></i><span class="txt mono fs-12">2 pickups · 4 parcels · 1 trip</span></div>
+                  </div>
+                  <div class="home-service-route" aria-hidden="true">
+                    <span class="txt mono fs-12 rt-lbl">Route</span>
+                    <div class="rt-track"><i class="rt-fill"></i><b class="rt-node n1"></b><b class="rt-node n2"></b><b class="rt-node n3"></b></div>
+                  </div>
+                  <div class="home-service-plus is-one" aria-hidden="true"><b>+1</b> parcel</div>
+                  <div class="home-service-plus is-three" aria-hidden="true"><b>+3</b> parcels</div>
+                  <div class="home-service-world" aria-hidden="true" data-gap="20">
+                    <div class="home-service-layer is-far">
+                      <div class="st bld" style="--x:-52.96;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-46.27;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-41.77;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-34.59;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-28.56;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-22.08;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-15.0;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-8.31;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:-3.81;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:3.37;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:9.4;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:15.88;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:22.96;--y:0;--h:7.8;--ar:0.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-elec.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:29.65;--y:0;--h:7.6;--ar:0.684;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-cafe.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:34.14;--y:0;--h:7.8;--ar:1.0107;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-it.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:41.33;--y:0;--h:8.2;--ar:0.7353;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-retail.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:47.36;--y:0;--h:8.6;--ar:0.754;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-med.avif" alt="" decoding="async" /></div>
+<div class="st bld" style="--x:53.84;--y:0;--h:8.8;--ar:0.804;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/backdrop/bld-fin.avif" alt="" decoding="async" /></div>
+
+                    </div>
+                    <div class="home-service-footpath"></div>
+                    <div class="home-service-layer is-mid">
+                      <div class="st life" style="--x:-9.6;--y:0.25;--h:1.28;--ar:1.166;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-couple.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:-7.9;--y:0.25;--h:0.8;--ar:0.7439;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-menu.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:-7.2;--y:0.25;--h:1.23;--ar:1.2173;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cafe-reader.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:4.9;--y:0.28;--h:1.6;--ar:0.4908;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p08.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:6.3;--y:0.28;--h:1.68;--ar:0.3447;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p04.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:7.4;--y:0.28;--h:1.73;--ar:0.3329;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p02.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:8.9;--y:0.28;--h:1.36;--ar:0.3211;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p12.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:9.6;--y:0.2;--h:2.3;--ar:0.9444;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-cart.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:12.3;--y:0.28;--h:1.73;--ar:0.3539;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p11.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:13.0;--y:0.2;--h:1.05;--ar:1.3933;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-scooter.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:14.8;--y:0.28;--h:1.6;--ar:0.3671;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p10.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:16.0;--y:0.28;--h:1.69;--ar:0.3487;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p05.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:17.0;--y:0.28;--h:1.64;--ar:0.4026;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p01.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:18.4;--y:0.28;--h:1.72;--ar:0.5013;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p09.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:19.7;--y:0.28;--h:1.76;--ar:0.3566;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p07.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:20.8;--y:0.2;--h:1.1;--ar:1.6105;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-moto.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:22.8;--y:0.28;--h:1.75;--ar:0.3263;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p03.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:23.8;--y:0.28;--h:1.65;--ar:0.3329;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-p06.avif" alt="" decoding="async" /></div>
+<div class="st life" style="--x:24.6;--y:0.2;--h:1.05;--ar:1.7643;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/life/life-bicycle.avif" alt="" decoding="async" /></div>
+
+                    </div>
+                    <div class="home-service-streaks"><i style="--x:6;--y:0.35;--w:7;" data-k="1.15"></i><i style="--x:10;--y:0.9;--w:10;" data-k="1.0"></i><i style="--x:2;--y:1.5;--w:6;" data-k="1.3"></i><i style="--x:14;--y:2.1;--w:9;" data-k="0.9"></i><i style="--x:-3;--y:2.8;--w:8;" data-k="1.2"></i><i style="--x:12;--y:3.6;--w:12;" data-k="0.8"></i><i style="--x:-6;--y:4.4;--w:7;" data-k="1.1"></i><i style="--x:8;--y:5.3;--w:9;" data-k="0.85"></i></div>
+                    <div class="home-service-layer is-near">
+                      <div class="st shop" style="--x:-5.4;--y:0;--h:3.4;--ar:1.1473;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/places/shop-boutique.avif" alt="" decoding="async" /></div>
+<div class="st cust cust-offer" style="--x:-1.8;--y:0;--h:1.62;--ar:0.4205;--cx:0.288"><img class="st-img" src="/assets/parcel-story/1-street/people/customer-offer.avif" alt="" decoding="async" /></div>
+<div class="st cust cust-stand" style="--x:-1.8;--y:0;--h:1.62;--ar:0.21;--cx:0.389"><img class="st-img" src="/assets/parcel-story/1-street/people/customer-stand.avif" alt="" decoding="async" /></div>
+<div class="st office" style="--x:9.94;--y:0;--h:4.8;--ar:1.8573;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/places/office-corporate.avif" alt="" decoding="async" /></div>
+<div class="st seller" style="--x:16.4;--y:0;--h:1.66;--ar:0.248;--cx:0.394"><img class="st-img" src="/assets/parcel-story/1-street/people/seller-corporate.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-1" style="--x:17.25;--y:0;--h:0.38;--ar:0.9732;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp1.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-2" style="--x:17.7;--y:0;--h:0.46;--ar:0.8357;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp2.avif" alt="" decoding="async" /></div>
+<div class="st pk pk-3" style="--x:18.15;--y:0;--h:0.42;--ar:0.8161;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/parcels/parcel-corp3.avif" alt="" decoding="async" /></div>
+                    </div>
+                  </div>
+                </div><div class="home-service-mb-truck-side">
+                <div class="mbts">
+                  <div class="home-service-truck-seat" aria-hidden="true"><div class="st seat" style="--x:2.895;--y:1.09;--h:0.656;--ar:1.0309;--cx:0"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-driving.avif" alt="" decoding="async" /></div></div>
+                  <img class="mbts-plate" src="/assets/parcel-story/2-truck-side/01-truck-complete.avif" alt="" />
+                  <div class="mbts-wheel w1"><img src="/assets/parcel-story/2-truck-side/02-wheel-front.avif" alt="" /></div>
+                  <div class="mbts-wheel w2"><img src="/assets/parcel-story/2-truck-side/03-wheel-rear.avif" alt="" /></div>
+                  <div class="home-service-truck-crew" aria-hidden="true"><div class="home-service-partner"><div class="st pose walk-l flip" style="--x:0;--y:0;--h:1.78;--ar:0.392;--cx:0.482"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-walk.avif" alt="" decoding="async" /></div>
+<div class="st pose recv-l flip" style="--x:0;--y:0;--h:1.78;--ar:0.3665;--cx:0.262"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-receive.avif" alt="" decoding="async" /></div>
+<div class="st pose carry-1" style="--x:0;--y:0;--h:1.78;--ar:0.4295;--cx:0.425"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-carry-1.avif" alt="" decoding="async" /></div>
+<div class="st pose place" style="--x:0;--y:0;--h:1.78;--ar:0.5365;--cx:0.199"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-place.avif" alt="" decoding="async" /></div>
+<div class="st pose walk-r" style="--x:0;--y:0;--h:1.78;--ar:0.392;--cx:0.482"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-walk.avif" alt="" decoding="async" /></div>
+<div class="st pose carry-3" style="--x:0;--y:0;--h:1.78;--ar:0.451;--cx:0.423"><img class="st-img" src="/assets/parcel-story/1-street/people/partner-carry-3.avif" alt="" decoding="async" /></div></div></div>
+                </div>
+              </div><div class="home-service-mb-ground"></div></div></div></div><div id="w-node-_50259f4a-cb3e-c7ee-49a7-e85b42e5a87c-c403df38" class="home-service-mb-second-screen"><div class="home-service-mb-text-wrap"><div class="home-service-eyebrow"><div class="txt mono fs-12">Our services</div></div><div class="home-service-mb-title"><h2 class="heading h2">Different loads. <span class="cl-note">Different ways to move.</span></h2></div><div class="home-service-mb-desc"><div class="txt fs-14">Two services are available today. Two more are being developed. Follow the same road to find the transport option that fits your requirement.</div></div><div class="home-service-cms"><div class="home-service-list"><div class="home-service-item is-live"><div class="home-service-item-ic"><img src="/assets/websiteimages/06-service-icons/domestic-interstate-transport.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-item-tag"><div class="txt mono fs-12">Available now · 01</div></div><div class="home-service-item-title"><div class="heading h6"><h3>ON-DEMAND DELIVERIES</h3></div></div><div class="home-service-item-desc"><div class="txt fs-16 fs-14-mb">Need goods moved today? Book suitable transport when you need it and review the fare before confirming.</div></div></div><div class="home-service-item is-live"><div class="home-service-item-ic"><img src="/assets/websiteimages/06-service-icons/project-cargo.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-item-tag"><div class="txt mono fs-12">Available now · 02</div></div><div class="home-service-item-title"><div class="heading h6"><h3>DEDICATED TRANSPORT</h3></div></div><div class="home-service-item-desc"><div class="txt fs-16 fs-14-mb">For consignments that need exclusive space, reserve the whole vehicle for your trip.</div></div></div><div class="home-service-item is-soon"><div class="home-service-item-ic"><img src="/assets/websiteimages/07-why-icons/why-2.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-item-tag"><div class="txt mono fs-12">Coming soon · 03</div></div><div class="home-service-item-title"><div class="heading h6"><h3>SCHEDULED FREIGHT</h3></div></div><div class="home-service-item-desc"><div class="txt fs-16 fs-14-mb">Future fixed-route freight options for businesses planning regular market and stock movements.</div></div></div><div class="home-service-item is-soon"><div class="home-service-item-ic"><img src="/assets/websiteimages/06-service-icons/warehousing-3pl.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-item-tag"><div class="txt mono fs-12">Coming soon · 04</div></div><div class="home-service-item-title"><div class="heading h6"><h3>SHARED FREIGHT</h3></div></div><div class="home-service-item-desc"><div class="txt fs-16 fs-14-mb">Share suitable cargo capacity with compatible consignments and book the space your goods need.</div></div></div></div></div></div><div class="home-service-mb-text-wrap"><div class="home-service-eyebrow"><div class="txt mono fs-12">How Connext works</div></div><div class="home-service-mb-title"><h2 class="heading h2">Three steps.<br><span class="cl-note">One simpler way to deliver.</span></h2></div><div class="home-service-mb-desc"><div class="txt fs-14">You&rsquo;ll review the booking price before accepting the trip.</div></div><div class="home-service-sub-wrap"><div class="home-service-sub-list"><div class="home-service-sub-item"><div class="home-service-sub-ic"><img src="/assets/websiteimages/06-service-icons/features-desktop/feature-1.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-tag"><div class="txt mono fs-12">Step 01</div></div><div class="home-service-sub-title"><h3 class="heading h6">TELL US<br />WHAT'S MOVING</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Add your goods, pickup address, destination and requested pickup details.</div></div></div><div class="home-service-sub-item"><div class="home-service-sub-ic is-invert"><img src="/assets/websiteimages/07-why-icons/why-4.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-tag"><div class="txt mono fs-12">Step 02</div></div><div class="home-service-sub-title"><h3 class="heading h6">SEE PRICE.<br />CONFIRM.</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Choose an available vehicle, review the fare and confirm your booking.</div></div></div><div class="home-service-sub-item"><div class="home-service-sub-ic is-invert"><img src="/assets/websiteimages/07-why-icons/why-2.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-tag"><div class="txt mono fs-12">Step 03</div></div><div class="home-service-sub-title"><h3 class="heading h6">HAND OVER<br />&amp; FOLLOW</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Complete pickup verification and follow trip updates through the app.</div></div></div></div></div></div><div class="home-service-mb-text-wrap"><div class="home-service-eyebrow"><div class="txt mono fs-12">Why Connext</div></div><div class="home-service-mb-title"><h2 class="heading h2">Reliability at every <span class="cl-green">milestone.</span></h2></div><div class="home-service-mb-desc"><div class="txt fs-14">Clear booking details and useful delivery visibility help you stay focused on your business, not repeated transport calls.</div></div><div class="home-service-sub-wrap"><div class="home-service-sub-list"><div class="home-service-sub-item"><div class="home-service-sub-ic is-invert"><img src="/assets/websiteimages/07-why-icons/why-4.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-title"><h3 class="heading h6">UPFRONT<br />FARE REVIEW</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Check your booking price before you confirm.</div></div></div><div class="home-service-sub-item"><div class="home-service-sub-ic is-invert"><img src="/assets/websiteimages/06-service-icons/project-cargo.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-title"><h3 class="heading h6">SUITABLE TRANSPORT<br />CHOICES</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Choose from the cargo vehicles available for your load.</div></div></div><div class="home-service-sub-item"><div class="home-service-sub-ic"><img src="/assets/websiteimages/06-service-icons/features-desktop/feature-1.png" loading="lazy" alt="" class="img-df"></div><div class="home-service-sub-title"><h3 class="heading h6">TRIP<br />UPDATES</h3></div><div class="home-service-sub-desc"><div class="txt fs-16 fs-14-mb">Follow your booked delivery through the customer app.</div></div></div></div></div></div></div><div id="w-node-_2574e342-02b7-4f06-7758-1ab215e977e2-c403df38" class="home-service-mb-empty-block second-screen"></div><div id="w-node-_6d88ba41-4dbc-04b3-7f35-b7dfaa3a364c-c403df38" class="home-service-mb-truck-wrap"><div class="home-service-mb-truck-stick"><div id="w-node-_0c8dfb70-b162-ebe1-0220-8072e6085513-c403df38" class="home-service-mb-truck truck-head"><img src="/assets/parcel-story/5-mobile/truck-top.avif" loading="lazy" alt="Connext truck seen from above." class="img-df"></div></div><div class="home-service-mb-road"><div class="home-service-mb-road-line"></div><div class="home-service-mb-road-line"></div></div></div></div></section>
+  </div>
+
+  <!-- ============== THE DESTINATION + APP DOWNLOAD (after the road) ============== -->
+  <div class="home-dest-wrap" data-section="dark">
+    <section class="home-dest" aria-labelledby="dest-title">
+      <div class="dest-inner">
+        <p class="dest-eyebrow pk-anim" style="--d:0">The destination</p>
+        <h2 class="dest-title" id="dest-title">
+          <span class="pk-line"><span class="pk-line-in" style="--d:1">Goods delivered.</span></span>
+          <span class="pk-line"><span class="pk-line-in is-accent" style="--d:2">Business moving.</span></span>
+        </h2>
+        <p class="dest-desc pk-anim" style="--d:3">Behind every consignment is a business preparing for its next customer. Connext brings those daily goods movements into one convenient booking experience.</p>
+        <div class="dest-route pk-anim" style="--d:4">
+          <span class="dest-route-label">Pickup</span>
+          <span class="dest-route-track" aria-hidden="true"><i class="dest-route-dot"></i><i class="dest-route-dash"></i><i class="dest-route-dot"></i></span>
+          <span class="dest-route-label">Delivery complete</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-app" id="download" aria-labelledby="app-title">
+      <div class="app-inner">
+        <div class="app-copy">
+          <p class="dest-eyebrow pk-anim" style="--d:0">Take Connext with you</p>
+          <h2 class="dest-title" id="app-title">
+            <span class="pk-line"><span class="pk-line-in" style="--d:1">Your next move</span></span>
+            <span class="pk-line"><span class="pk-line-in" style="--d:2">is <span class="is-accent">a few taps away.</span></span></span>
+          </h2>
+          <p class="app-desc pk-anim" style="--d:3">Download the Connext customer app to book available goods transport, review fares and follow your deliveries.</p>
+          <div class="app-stores pk-anim" style="--d:4">
+            <!-- TODO: replace href="#" with the official Google Play / App Store links -->
+            <a class="app-store-btn" href="#" aria-label="Get the Connext app on Google Play">
+              <img class="app-store-logo" src="/assets/app/google-play.png" alt="" width="24" height="26" />
+              <span class="app-store-txt"><small>Get it on</small>Google Play</span>
+            </a>
+            <a class="app-store-btn" href="#" aria-label="Download the Connext app on the App Store">
+              <img class="app-store-logo" src="/assets/app/apple.png" alt="" width="20" height="26" />
+              <span class="app-store-txt"><small>Download on the</small>App Store</span>
+            </a>
+          </div>
+          <p class="app-note pk-anim" style="--d:5">Use the official application store links when building the live website.</p>
+        </div>
+
+        <!-- phone mockup goes here later, e.g.
+             <img class="app-phone-img" src="/assets/app/phone.png" alt="Connext app booking screen" /> -->
+        <div class="app-phone" aria-hidden="true"></div>
+      </div>
+
+    </section>
+  </div>
+
+  <!-- ============================== FAQ ============================= -->
+  <div class="home-faq-wrap">
+    <section class="home-faq" aria-labelledby="faq-title">
+      <div class="container grid">
+        <div class="home-faq-text-wrap">
+          <div class="home-faq-eyebrow"><div class="txt mono fs-12">FAQs</div></div>
+          <div class="home-faq-title"><h2 class="heading h2" id="faq-title">Questions?<br /><span class="cl-note">We&rsquo;ve got answers.</span></h2></div>
+          <div class="home-faq-desc"><div class="txt fs-16">Booking, pricing and tracking with Connext, in short.</div></div>
+        </div>
+        <div class="home-faq-main">
+          <div class="line"></div>
+          <div class="home-faq-main-list">
+            <div class="home-faq-main-item is-open">
+              <div class="home-faq-main-item-number"><div class="txt mono fs-10">01</div></div>
+              <div class="home-faq-main-item-inner">
+                <h3 class="home-faq-main-item-h">
+                  <button class="home-faq-main-item-title-wrap" type="button" id="faq-q-01" aria-expanded="true" aria-controls="faq-a-01">
+                    <span class="home-faq-main-item-title"><span class="txt fs-16 fw-med">What is Connext?</span></span>
+                    <span class="home-faq-main-item-dot" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="home-faq-main-item-ans" id="faq-a-01" role="region" aria-labelledby="faq-q-01">
+                  <div class="home-faq-main-item-ans-in"><p class="txt fs-16">Connext helps customers book available vehicles for goods transportation in supported Chennai areas.</p></div>
+                </div>
+              </div>
+              <div class="home-faq-main-item-line"></div>
+            </div>
+            <div class="home-faq-main-item">
+              <div class="home-faq-main-item-number"><div class="txt mono fs-10">02</div></div>
+              <div class="home-faq-main-item-inner">
+                <h3 class="home-faq-main-item-h">
+                  <button class="home-faq-main-item-title-wrap" type="button" id="faq-q-02" aria-expanded="false" aria-controls="faq-a-02">
+                    <span class="home-faq-main-item-title"><span class="txt fs-16 fw-med">Can I see the price before booking?</span></span>
+                    <span class="home-faq-main-item-dot" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="home-faq-main-item-ans" id="faq-a-02" role="region" aria-labelledby="faq-q-02">
+                  <div class="home-faq-main-item-ans-in"><p class="txt fs-16">Yes. Review the applicable booking fare and charges before confirming.</p></div>
+                </div>
+              </div>
+              <div class="home-faq-main-item-line"></div>
+            </div>
+            <div class="home-faq-main-item">
+              <div class="home-faq-main-item-number"><div class="txt mono fs-10">03</div></div>
+              <div class="home-faq-main-item-inner">
+                <h3 class="home-faq-main-item-h">
+                  <button class="home-faq-main-item-title-wrap" type="button" id="faq-q-03" aria-expanded="false" aria-controls="faq-a-03">
+                    <span class="home-faq-main-item-title"><span class="txt fs-16 fw-med">Can I follow my delivery?</span></span>
+                    <span class="home-faq-main-item-dot" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="home-faq-main-item-ans" id="faq-a-03" role="region" aria-labelledby="faq-q-03">
+                  <div class="home-faq-main-item-ans-in"><p class="txt fs-16">The customer application supports trip status and tracking features, depending on the booking stage.</p></div>
+                </div>
+              </div>
+              <div class="home-faq-main-item-line"></div>
+            </div>
+            <div class="home-faq-main-item">
+              <div class="home-faq-main-item-number"><div class="txt mono fs-10">04</div></div>
+              <div class="home-faq-main-item-inner">
+                <h3 class="home-faq-main-item-h">
+                  <button class="home-faq-main-item-title-wrap" type="button" id="faq-q-04" aria-expanded="false" aria-controls="faq-a-04">
+                    <span class="home-faq-main-item-title"><span class="txt fs-16 fw-med">Is shared freight available?</span></span>
+                    <span class="home-faq-main-item-dot" aria-hidden="true"></span>
+                  </button>
+                </h3>
+                <div class="home-faq-main-item-ans" id="faq-a-04" role="region" aria-labelledby="faq-q-04">
+                  <div class="home-faq-main-item-ans-in"><p class="txt fs-16">Shared freight and fixed-route scheduled freight are upcoming services.</p></div>
+                </div>
+              </div>
+              <div class="home-faq-main-item-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============================ FOOTER ============================ -->
+  <div class="footer-wrap cnx-footer-wrap">
+    <footer class="cnx-footer" aria-label="Site footer">
+      <div class="cnx-footer-inner">
+        <div class="cnx-footer-top">
+          <div class="cnx-footer-brand">
+            <a class="cnx-footer-logo" href="/" aria-label="Connext home"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
+            <p class="cnx-footer-tagline">Smarter goods transportation for Chennai businesses.</p>
+          </div>
+
+          <nav class="cnx-footer-col" aria-label="Services">
+            <h3 class="cnx-footer-head">Services</h3>
+            <ul>
+              <li><a href="#services">On-Demand</a></li>
+              <li><a href="#services">Dedicated Transport</a></li>
+              <li><a href="#services">Upcoming Freight</a></li>
+            </ul>
+          </nav>
+
+          <nav class="cnx-footer-col" aria-label="Explore">
+            <h3 class="cnx-footer-head">Explore</h3>
+            <ul>
+              <li><a href="#how-it-works">How It Works</a></li>
+              <li><a href="#why-connext">Why Connext</a></li>
+              <li><a href="#download">Download App</a></li>
+            </ul>
+          </nav>
+
+          <div class="cnx-footer-col">
+            <h3 class="cnx-footer-head">Contact</h3>
+            <ul>
+              <li><a href="tel:+919382618033">+91 93826 18033</a></li>
+              <li><a href="mailto:nikhil@connextindia.com">nikhil@connextindia.com</a></li>
+              <li><span>Chennai, Tamil Nadu</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="cnx-footer-bottom">
+          <p>CONNEXT &copy; 2026 <span aria-hidden="true">&middot;</span> Concept visualization <span aria-hidden="true">&middot;</span> <a href="/privacy-policy">Privacy Policy</a> <span aria-hidden="true">&middot;</span> <a href="/terms-conditions">Terms &amp; Conditions</a></p>
+        </div>
+      </div>
+
+    </footer>
+  </div>
+
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

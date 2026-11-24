@@ -1,0 +1,65 @@
+/* ============================================================================
+   INSIGHTS — a dark list of articles; hovering a row cross-fades its thumbnail
+   into the frame on the right.
+   ========================================================================== */
+
+.home-ins-wrap { margin-bottom: -1px; }
+.home-ins {
+  margin-top: calc(-.2 * var(--section-rem));
+  padding-block: calc(16 * var(--section-rem));
+  background-color: var(--bg-main);
+  color: var(--content-main);
+  contain: paint;
+}
+
+.home-ins-text-wrap { grid-area: 1 / 6 / 2 / -2; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: calc(10 * var(--section-rem)); }
+.home-ins-title { width: calc(80 * var(--section-rem)); color: var(--content-main); }
+.home-ins-desc-wrap { width: calc(var(--container-one-column) * 3 + var(--container-column-gap) * 2); }
+.home-ins-desc { margin-bottom: calc(3.2 * var(--section-rem)); color: var(--content-sub); }
+.home-ins-action { display: inline-block; text-decoration: none; color: inherit; }
+.home-ins-action .btn { width: fit-content; flex: 0 0 auto; }
+
+.home-ins-main-wrap { grid-area: 2 / 6 / 3 / -2; display: flex; justify-content: space-between; pointer-events: none; }
+.home-ins-main { pointer-events: auto; }
+.home-ins-cms-list { position: relative; background-color: var(--bg-main); }
+.home-ins-cms-item { position: relative; width: calc(var(--container-one-column) * 7 + var(--container-column-gap) * 6); }
+.home-ins-cms-item-inner { position: relative; display: flex; justify-content: space-between; align-items: center; gap: calc(2 * var(--section-rem)); padding-block: calc(1.6 * var(--section-rem)); }
+.home-ins-cms-item-info { display: flex; gap: calc(.4 * var(--section-rem)); margin-bottom: calc(.6 * var(--section-rem)); color: var(--content-soft); }
+.home-ins-cms-item-cate { flex: none; color: var(--content-sub); }
+.home-ins-cms-item-title { color: var(--content-main); }
+.home-ins-cms-item-line { width: 100%; height: var(--border-size); background-color: var(--border-light); }
+.home-ins-cms-item-link { position: absolute; inset: 0; }
+
+.home-ins-cms-thumb { display: grid; }
+.home-ins-cms-thumb-list { display: grid; }
+.home-ins-cms-thumb-item {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transition: opacity .3s cubic-bezier(.445, .05, .55, .95);
+}
+.home-ins-cms-thumb-item.is-active { opacity: 1; }
+.home-ins-cms-thumb-inner { width: calc(29.3 * var(--section-rem)); height: calc(19.6 * var(--section-rem)); }
+.home-ins-cms-thumb-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+@media (max-width: 991px) {
+  .home-ins { padding-block: calc(10 * var(--section-rem)); }
+  .home-ins-text-wrap { position: sticky; top: calc(12 * var(--section-rem)); flex-flow: column; justify-content: flex-start; align-items: flex-start; margin-bottom: 0; }
+  .home-ins-title { margin-bottom: calc(3.2 * var(--section-rem)); width: auto; }
+  .home-ins-desc { margin-bottom: calc(1.6 * var(--section-rem)); }
+  .home-ins-cms-list { display: flex; flex-flow: column; gap: var(--container-column-gap); }
+  .home-ins-cms-item { width: auto; }
+}
+@media (max-width: 767px) {
+  .home-ins-main-thumb { display: none; }
+  .home-ins-cms-item-inner { flex-flow: column; align-items: flex-start; padding: calc(2 * var(--section-rem)) calc(1.2 * var(--section-rem)); background-color: var(--bg-sf-1); }
+}
+
+.home-ins-main-wrap { align-items: flex-end; }
+.home-ins-cms-item-inner { color: inherit; text-decoration: none; }
+.home-ins-cms-item-text { min-width: 0; }
+.home-ins-cms-item-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.home-ins-cms-item-info { margin-bottom: calc(.6 * var(--section-rem)); }
+.home-ins-cms-item-line { position: relative; overflow: hidden; }
+.home-ins-cms-item-line::after { content: ''; position: absolute; inset: 0; background: var(--content-main); transform: translateX(-100%); transition: transform .6s ease; }
+.home-ins-cms-item:hover .home-ins-cms-item-line::after,
+.home-ins-cms-item:focus-within .home-ins-cms-item-line::after { transform: translateX(0); }

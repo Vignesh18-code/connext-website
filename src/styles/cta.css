@@ -1,0 +1,79 @@
+/* ============================================================================
+   CTA — "Ready to move smarter?" over a slow ring pulse.
+   ========================================================================== */
+.home-cta-wrap { position: relative; }
+
+.cta {
+  position: relative;
+  z-index: 3;
+  background-color: var(--bg-main);
+  color: var(--content-main);
+  overflow: hidden;
+}
+.cta-inner { -webkit-mask: linear-gradient(#0000 0%, #000 15% 85%, #0000 100%); mask: linear-gradient(#0000 0%, #000 15% 85%, #0000 100%); }
+
+.cta-text-wrap {
+  grid-area: 1 / 7 / 2 / -7;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  height: calc(64.8 * var(--section-rem));
+  padding-block: calc(17 * var(--section-rem));
+  text-align: center;
+}
+.cta-title { max-width: calc(45 * var(--section-rem)); margin-bottom: calc(2 * var(--section-rem)); }
+.cta-desc { max-width: calc(33 * var(--section-rem)); color: var(--content-sub); }
+.cta-btn-wrap { display: none; margin-top: calc(3.2 * var(--section-rem)); text-decoration: none; color: inherit; }
+.cta-btn-wrap .btn { width: fit-content; flex: 0 0 auto; }
+
+/* the ring pulse sits behind the copy, centred on the same grid cell */
+.cta-circs {
+  grid-area: 1 / 7 / 2 / -7;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  place-self: center;
+  width: calc(50 * var(--section-rem));
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+.cta-circ {
+  position: absolute;
+  width: 100%;
+  aspect-ratio: 1;
+  border: var(--border-size) solid var(--border-light);
+  border-radius: 50%;
+}
+.anim-wave {
+  opacity: 0;
+  border-width: .2px;
+  animation: cta-wave 15s linear infinite;
+  animation-delay: var(--wave-delay, 0s);
+}
+@keyframes cta-wave {
+  0%        { transform: scale(1); opacity: 0; }
+  20%, 80%  { opacity: .65; }
+  60%       { opacity: 1; }
+  100%      { transform: scale(3); opacity: 0; }
+}
+
+.cta-link { position: absolute; inset: 0; z-index: 2; }
+
+@media (max-width: 991px) {
+  .cta-text-wrap { height: calc(48 * var(--section-rem)); }
+  .cta-desc { margin-bottom: calc(2 * var(--section-rem)); }
+  .cta-btn-wrap { display: block; }
+  .cta-link { display: none; }
+}
+@media (max-width: 767px) {
+  .cta-text-wrap { height: auto; padding-top: calc(13.4 * var(--section-rem)); padding-bottom: calc(11.4 * var(--section-rem)); }
+  .cta-title { max-width: calc(30 * var(--section-rem)); }
+  .cta-desc { max-width: calc(32 * var(--section-rem)); }
+  .cta-circs { width: calc(32 * var(--section-rem)); }
+}
+@media (prefers-reduced-motion: reduce) { .anim-wave { animation: none; opacity: .5; } }

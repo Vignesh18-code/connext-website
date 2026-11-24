@@ -1,0 +1,137 @@
+/* ============================================================================
+   FAQ — a sticky heading beside an accordion.
+   Open/close is animated in src/sections/faq.js, which also collapses the
+   closed answers on load, so with JS off every answer simply shows.
+   ========================================================================== */
+.home-faq {
+  /* the question's line box — the number and dot centre on it */
+  --faq-q-lh: calc(1.6rem * 1.2);
+  padding-top: calc(16 * var(--section-rem));
+  padding-bottom: calc(6 * var(--section-rem));
+}
+
+.home-faq-text-wrap { grid-area: 1 / 2 / 2 / 5; position: sticky; top: calc(16 * var(--section-rem)); align-self: start; }
+.home-faq-title { margin-bottom: calc(3.2 * var(--section-rem)); }
+.home-faq-desc { color: var(--content-soft); }
+
+.home-faq-main { grid-area: 1 / 6 / 2 / 13; }
+.home-faq-main .line { width: 100%; height: var(--border-size); background-color: var(--border-light); }
+
+/* --- item ------------------------------------------------------------------ */
+.home-faq-main-item { position: relative; display: flex; align-items: flex-start; }
+.home-faq-main-item-number {
+  flex: none;
+  display: flex; align-items: center;
+  width: var(--container-one-column);
+  height: var(--faq-q-lh);
+  margin-top: calc(3 * var(--section-rem));
+  margin-right: var(--container-column-gap);
+  color: var(--content-soft);
+  font-variant-numeric: tabular-nums;
+  transition: color .3s ease;
+}
+.home-faq-main-item-inner { flex: 1; min-width: 0; }
+.home-faq-main-item-h { margin: 0; font: inherit; }
+
+/* the whole row is the hit area: padding lives on the button, not the item */
+.home-faq-main-item-title-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: calc(3.2 * var(--section-rem));
+  width: 100%;
+  padding: calc(3 * var(--section-rem)) 0 calc(3 * var(--section-rem));
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.home-faq-main-item-title-wrap:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; border-radius: 2px; }
+.home-faq-main-item-title { flex: 1; min-width: 0; color: var(--content-soft); transition: color .3s ease; }
+.home-faq-main-item-title .txt { display: block; }
+
+.home-faq-main-item-dot {
+  flex: none;
+  position: relative;
+  width: calc(.8 * var(--section-rem)); height: calc(.8 * var(--section-rem));
+  min-width: 6px; min-height: 6px;
+  margin-top: calc((var(--faq-q-lh) - max(6px, .8 * var(--section-rem))) / 2);
+  border-radius: 50%;
+  background-color: var(--content-disable);
+  transition: background-color .3s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+/* answer: aligned with the question text, never re-indented */
+.home-faq-main-item-ans { overflow: hidden; }
+.home-faq-main-item-ans-in {
+  padding: 0 calc(4.4 * var(--section-rem)) calc(3 * var(--section-rem)) 0;
+  color: var(--content-soft);
+}
+.home-faq-main-item-ans .txt { margin: 0; max-width: 56ch; line-height: 1.55; }
+
+.home-faq-main-item-line {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: var(--border-size);
+  background-color: var(--border-light);
+  transition: background-color .4s ease;
+}
+
+/* --- states ---------------------------------------------------------------- */
+.home-faq-main-item.is-open .home-faq-main-item-number,
+.home-faq-main-item.is-open .home-faq-main-item-title { color: var(--content-main); }
+.home-faq-main-item.is-open .home-faq-main-item-dot { background-color: var(--primary); transform: scale(1.4); }
+.home-faq-main-item.is-open .home-faq-main-item-line { background-color: var(--content-main); }
+
+@media (hover: hover) {
+  .home-faq-main-item:hover .home-faq-main-item-title,
+  .home-faq-main-item:hover .home-faq-main-item-number { color: var(--content-main); }
+  .home-faq-main-item:not(.is-open):hover .home-faq-main-item-dot { background-color: var(--content-main); }
+}
+
+/* --- side note ------------------------------------------------------------- */
+.home-faq-sub-text-wrap { grid-area: 1 / -6 / 2 / -3; position: sticky; top: calc(16 * var(--section-rem)); align-self: start; width: calc(var(--container-one-column) * 2 + var(--container-column-gap) * 2); }
+.home-faq-sub-text { margin-bottom: calc(3.2 * var(--section-rem)); color: var(--content-soft); }
+.home-faq-sub-link { color: inherit; }
+
+/* --- responsive ------------------------------------------------------------ */
+@media (max-width: 991px) {
+  .home-faq { padding-top: calc(10 * var(--section-rem)); }
+  .home-faq-text-wrap { grid-area: 1 / 2 / 2 / -2; position: relative; top: auto; margin-bottom: calc(6.4 * var(--section-rem)); }
+  .home-faq-main { grid-area: 2 / 2 / 3 / -2; }
+  .home-faq-sub-text-wrap { grid-area: 3 / 2 / 4 / -2; position: relative; top: auto; width: auto; margin-top: calc(6.4 * var(--section-rem)); }
+  .home-faq-main-item-number { width: calc(var(--container-one-column) / 2); margin-right: var(--container-column-gap); }
+  .home-faq-main-item-title-wrap { gap: calc(1.6 * var(--section-rem)); }
+  .home-faq-main-item-ans-in { padding-right: calc(2.4 * var(--section-rem)); }
+}
+@media (max-width: 767px) {
+  .home-faq { padding-block: calc(6.4 * var(--section-rem)); }
+  .home-faq-main-item-number { width: auto; min-width: 2.4rem; margin-right: calc(1.2 * var(--section-rem)); }
+  .home-faq-main-item-title-wrap,
+  .home-faq-main-item-number { padding-top: 0; }
+  .home-faq-main-item-title-wrap { padding-block: calc(2.4 * var(--section-rem)); }
+  .home-faq-main-item-number { margin-top: calc(2.4 * var(--section-rem)); }
+  .home-faq-main-item-ans-in { padding: 0 0 calc(2.4 * var(--section-rem)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-faq-main-item-dot, .home-faq-main-item-line,
+  .home-faq-main-item-title, .home-faq-main-item-number { transition: none; }
+}
+
+/* heading: a small green label, then the two-line question/answer headline
+   sized to sit in the narrow sticky column beside the accordion */
+.home-faq-eyebrow { margin-bottom: calc(2 * var(--section-rem)); color: #16a34a; }
+/* (beats the shared `:is(...) .heading.h2` size in section-sizing.css) */
+.home-faq-wrap .home-faq-title .heading.h2 { font-size: calc(3.6 * var(--section-rem)); line-height: 1.05; }
+@media (max-width: 991px) {
+  .home-faq-wrap .home-faq-title .heading.h2 { font-size: calc(5.2 * var(--section-rem)); }
+}
+@media (max-width: 767px) {
+  .home-faq-wrap .home-faq-title .heading.h2 { font-size: calc(3.8 * var(--section-rem)); }
+}
+
+/* section-sizing.css (carried over from the reference) hides every answer at
+   991px and below; here an answer shows whenever faq.js has it open, and
+   [hidden] keeps the closed ones shut */
+@media (max-width: 991px) {
+  .home-faq-wrap .home-faq-main-item-ans { display: block; }
+  .home-faq-wrap .home-faq-main-item-ans[hidden] { display: none; }
+}

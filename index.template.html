@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>United Carriers — Hero Globe (1:1 rebuild)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+<!-- HEADER -->
+  <!-- ============================================================
+       HERO SECTION  (mirrors .home-hero on unitedcarriers.com)
+       ============================================================ -->
+  <div class="home-hero-wrap">
+  <section class="home-hero" data-section="dark">
+
+    <!-- starfield background (their .home-hero has star.avif / hero-blur.png layers) -->
+    <img class="hero-stars" src="/assets/star.avif" alt="" aria-hidden="true" />
+
+    <!-- ---- THE GLOBE ---------------------------------------------------------
+         Layer 1: .home-hero-globe-shadow-grp  = pure-CSS orange/blue atmosphere
+         Layer 2: #globe <canvas>              = three.js dot globe (transparent)
+         Layer 3: .globe-label divs            = CSS2DRenderer country chips
+    --------------------------------------------------------------------------- -->
+    <div class="home-hero-globe" id="globeWrap">
+      <canvas id="globe" class="home-hero-canvas" role="img" aria-label="Animated Chennai coverage globe with neighbourhood locations and illustrative rider routes"></canvas>
+
+      <div class="home-hero-globe-shadow-grp" aria-hidden="true">
+        <div class="home-hero-globe-shadow orange"></div>
+        <div class="home-hero-globe-shadow blue"></div>
+        <div class="home-hero-globe-shadow blue-plus"></div>
+        <div class="home-hero-globe-shadow orange-plus"></div>
+        <div class="home-hero-globe-blur"><img src="/assets/start-blur-green.avif" alt="" /></div>
+      </div>
+    </div>
+
+    <!-- ---- HERO COPY (left side) ------------------------------------------ -->
+    <div class="hero-copy">
+      <p class="hero-eyebrow hero-anim" style="--d:0">Chennai's Business Freight Connection</p>
+      <h1 class="hero-title">
+        <span class="hero-line"><span class="hero-line-in" style="--d:1">Your Goods.</span></span>
+        <span class="hero-line"><span class="hero-line-in" style="--d:2">Your Business.</span></span>
+        <span class="hero-line"><span class="hero-line-in is-accent" style="--d:3">Our Move.</span></span>
+      </h1>
+      <p class="hero-desc hero-anim" style="--d:4">From market pickups to shop deliveries, Connext helps Chennai businesses move goods with suitable vehicles, upfront pricing and convenient app-based booking.</p>
+      <div class="hero-actions hero-anim" style="--d:5">
+        <a class="hero-btn hero-btn-primary" href="#download">
+          <span>Download Connext</span>
+          <svg class="hero-btn-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7" /><path d="M8 7h9v9" /></svg>
+        </a>
+        <a class="hero-btn hero-btn-ghost" href="/contact"><span>Talk to Our Team</span></a>
+      </div>
+      <p class="hero-tagline hero-anim" style="--d:6">Connected by every move <span aria-hidden="true">·</span> Chennai, India</p>
+    </div>
+
+  </section>
+  </div>
+
+
+<!-- SECTIONS -->
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
