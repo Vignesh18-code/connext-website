@@ -429,7 +429,7 @@ body { color: var(--content-main); }
 }
 
 /* ---------------------------------------------------------------------------
-   HERO COPY (left side) — eyebrow, three-line title, description, CTAs,
+   HERO COPY (left side) — three-line title, description, CTAs,
    tagline. Everything enters once the hero gets `.is-revealed` (main.js).
    Buttons use the navbar's theme green (#22c55e / hover #4ade80).
    --------------------------------------------------------------------------- */
@@ -452,12 +452,6 @@ body { color: var(--content-main); }
   width: clamp(420px, calc(var(--globe-left) - var(--copy-gap) - var(--nav-left)), 780px);
   container-type: inline-size;
   pointer-events: none;
-}
-.hero-eyebrow {
-  margin: 0 0 clamp(18px, 3.2cqi, 26px);
-  font: 600 clamp(12px, 1.75cqi, 14px)/1.2 var(--font-body);
-  letter-spacing: .18em; text-transform: uppercase;
-  color: #4ade80;
 }
 .hero-title {
   margin: 0;
@@ -562,9 +556,6 @@ body { color: var(--content-main); }
   0%        { background-position: 100% 0; }
   45%, 100% { background-position: 0% 0; }
 }
-/* the eyebrow's letter-spacing settles in as it appears */
-.hero-eyebrow { transition-property: opacity, transform, filter, letter-spacing; }
-.home-hero:not(.is-revealed) .hero-eyebrow { letter-spacing: .4em; }
 
 /* --- responsive ---------------------------------------------------------- */
 @media (min-width: 768px) and (max-height: 720px) {
@@ -578,8 +569,6 @@ body { color: var(--content-main); }
 @media (max-width: 767px) {
   .home-hero { min-height: max(960px, 100svh); }
   .hero-copy { left: 24px; right: 24px; top: 104px; transform: none; width: auto; }
-  .hero-eyebrow { font-size: 11px; letter-spacing: .14em; margin-bottom: 16px; }
-  .home-hero:not(.is-revealed) .hero-eyebrow { letter-spacing: .3em; }
   .hero-title { font-size: clamp(34px, 10vw, 46px); }
   .hero-desc { font-size: 15px; line-height: 1.6; margin-top: 16px; }
   .hero-actions { flex-direction: column; margin-top: 26px; gap: 10px; }

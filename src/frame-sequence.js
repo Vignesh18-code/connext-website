@@ -173,6 +173,6 @@ export class FrameSequence {
 export function frameUrls(name, count) {
   return Array.from(
     { length: count },
-    (_, i) => `/assets/parcel-story/${name}/${String(i).padStart(3, '0')}.avif`,
+    (_, i) => `${import.meta.env.BASE_URL}assets/parcel-story/${name}/${String(i).padStart(3, '0')}.avif`,
   );
 }

@@ -226,7 +226,7 @@ def header():
           <path stroke="url(#site-nav-border-gradient)" />
         </svg>
 
-        <a class="site-nav-logo" href="/"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
+        <a class="site-nav-logo" href="./"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
 
         <nav class="site-nav-links" aria-label="Main navigation">
 {desktop}
@@ -811,9 +811,6 @@ def service():
               <div class="home-service-road-stick"></div>
             </div>
           </div>
-
-          <!-- the road fades out below the parked truck -->
-          <div class="home-service-road-end" aria-hidden="true"></div>
 
           <div class="home-service-sub-content">
             <div class="container grid">

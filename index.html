@@ -31,7 +31,7 @@
           <path stroke="url(#site-nav-border-gradient)" />
         </svg>
 
-        <a class="site-nav-logo" href="/"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
+        <a class="site-nav-logo" href="./"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
 
         <nav class="site-nav-links" aria-label="Main navigation">
           <a class="site-nav-link" href="/about">About Us</a>
@@ -91,7 +91,6 @@
 
     <!-- ---- HERO COPY (left side) ------------------------------------------ -->
     <div class="hero-copy">
-      <p class="hero-eyebrow hero-anim" style="--d:0">Chennai's Business Freight Connection</p>
       <h1 class="hero-title">
         <span class="hero-line"><span class="hero-line-in" style="--d:1">Your Goods.</span></span>
         <span class="hero-line"><span class="hero-line-in" style="--d:2">Your Business.</span></span>
@@ -442,9 +441,6 @@
             </div>
           </div>
 
-          <!-- the road fades out below the parked truck -->
-          <div class="home-service-road-end" aria-hidden="true"></div>
-
           <div class="home-service-sub-content">
             <div class="container grid">
               <!-- how Connext works: three steps the truck drives past -->
@@ -629,6 +625,22 @@
           <span class="dest-route-label">Delivery complete</span>
         </div>
       </div>
+
+      <!-- the road from the services story runs on into this panel; the truck
+           drives it as you scroll and parks at the delivery pin (destination.js) -->
+      <div class="dest-scene" aria-hidden="true">
+        <svg class="dest-road" preserveAspectRatio="none">
+          <path class="dest-road-base" />
+          <path class="dest-road-line" />
+          <path class="dest-truck-path" />
+        </svg>
+        <div class="dest-pin">
+          <span class="dest-pin-ring"></span>
+          <span class="dest-pin-dot"></span>
+          <span class="dest-pin-label">Delivered</span>
+        </div>
+        <img class="dest-truck" src="/assets/parcel-story/4-truck-top/01-truck-top.avif" alt="" />
+      </div>
     </section>
 
     <section class="home-app" id="download" aria-labelledby="app-title">
@@ -746,7 +758,7 @@
       <div class="cnx-footer-inner">
         <div class="cnx-footer-top">
           <div class="cnx-footer-brand">
-            <a class="cnx-footer-logo" href="/" aria-label="Connext home"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
+            <a class="cnx-footer-logo" href="./" aria-label="Connext home"><img src="/assets/connext-logo.png" alt="Connext" width="867" height="143" /></a>
             <p class="cnx-footer-tagline">Smarter goods transportation for Chennai businesses.</p>
           </div>
 

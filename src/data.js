@@ -125,7 +125,7 @@ export const INDIA_SEA_LABELS = [
 // map + framing options for the India version (spread into OPTS to use it,
 // and restore the INDIA MAP FRAMING css)
 export const INDIA_MAP = {
-  map: '/data/india-map.json',
+  map: `${import.meta.env.BASE_URL}data/india-map.json`,
   mapProjection: null,
   mapLayers: [
     { name: 'ocean',   color: '#00C757', size: 0.0034, opacity: 0.3 },
@@ -296,8 +296,8 @@ export const SEA_LABELS = CHENNAI_SEA_LABELS;
 
 // Chennai projection keeps the reference globe rendering and banner framing.
 export const CHENNAI_MAP = {
-  map: '/data/chennai-map.json',
-  boundaryMap: '/data/chennai-boundaries.json',
+  map: `${import.meta.env.BASE_URL}data/chennai-map.json`,
+  boundaryMap: `${import.meta.env.BASE_URL}data/chennai-boundaries.json`,
   mapProjection: CHENNAI_PROJECTION,
   mapLayers: [],
   pinSize: 0.0042,

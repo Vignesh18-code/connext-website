@@ -702,17 +702,8 @@
 .home-service-mb .home-service-sub-item { padding-bottom: calc(3.2 * var(--section-rem)); }
 .home-service-mb .home-service-sub-ic { width: calc(4 * var(--section-rem)); height: calc(4 * var(--section-rem)); }
 
-/* the end of the road: a soft fade into the page below the parked truck.
-   It paints over the road (same layer, later in the grid) but under the
-   copy, which is lifted one layer above it. */
-.home-service-road-end {
-  position: relative; z-index: 1;
-  grid-area: 2 / 1 / 3 / -1;
-  align-self: end;
-  height: 34vh;
-  background: linear-gradient(to bottom, rgb(255 255 255 / 0), var(--bg-main) 62%);
-  pointer-events: none;
-}
+/* the road runs straight on into the destination panel below (destination.js
+   continues it there), so it no longer fades out here */
 .home-service-sub-content { position: relative; z-index: 1; }
 /* room below the last card for the parked truck and the end of the road */
 .home-service-sub-wrap.is-why { padding-bottom: 40vh; }

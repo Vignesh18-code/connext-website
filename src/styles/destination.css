@@ -161,3 +161,107 @@
   .dest-route { flex-wrap: wrap; row-gap: 14px; }
   .app-store-btn { height: 48px; }
 }
+
+/* --- the arrival: the services road runs on into the destination panel ------
+   destination.js draws the road (same x and width as the road above), drives
+   the truck along it with the scroll and parks it at the pin. Sizes come from
+   the JS as custom properties so the truck matches the one on the road above. */
+/* the truck arrives from the road above, so this panel lets it overhang its top edge */
+.home-dest { min-height: clamp(560px, 46vw, 680px); overflow: visible; }
+.home-dest-wrap { overflow-x: clip; }
+.dest-inner { position: relative; z-index: 2; }
+/* the copy stops short of the road (--dest-text-max is measured in the JS) */
+@media (min-width: 768px) {
+  /* fallback until the JS has measured the road: half the width, less the road */
+  .dest-inner { max-width: var(--dest-text-max, calc(42.9vw - 56px - var(--dest-pad))); }
+}
+
+.dest-scene {
+  position: absolute; inset: 0; z-index: 1;
+  pointer-events: none;
+}
+.dest-road { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.dest-truck-path { fill: none; stroke: none; }
+.dest-road-base {
+  fill: none; stroke: #0c0c0c; stroke-linecap: round; stroke-linejoin: round;
+  filter: drop-shadow(0 18px 40px rgb(0 0 0 / .35));
+}
+.dest-road-line {
+  fill: none; stroke: rgb(255 255 255 / .55); stroke-width: 3; stroke-linecap: butt;
+  stroke-dasharray: 22 18;
+}
+
+.dest-truck {
+  position: absolute; left: 0; top: 0;
+  width: var(--dest-truck-l, 270px); height: auto;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / .45));
+  visibility: hidden;      /* shown by destination.js once it is on its route */
+}
+
+/* the delivery pin at the end of the road */
+.dest-pin {
+  position: absolute; left: 0; top: 0;
+  width: 0; height: 0;
+}
+.dest-pin-dot,
+.dest-pin-ring {
+  position: absolute; left: 0; top: 0;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+.dest-pin-dot {
+  width: 14px; height: 14px;
+  background: var(--dest-green);
+  box-shadow: 0 0 0 5px rgb(74 222 128 / .18), 0 0 22px rgb(74 222 128 / .7);
+}
+.dest-pin-ring {
+  width: var(--dest-ring, 150px); height: var(--dest-ring, 150px);
+  border: 1.5px dashed rgb(74 222 128 / .55);
+  transition: border-color .5s ease;
+}
+.dest-pin-label {
+  position: absolute; left: 0; top: calc(var(--dest-ring, 150px) / 2 + 14px);
+  transform: translate(-50%, 6px);
+  padding: 7px 12px 7px 26px;
+  border-radius: 999px;
+  background: rgb(5 20 18 / .85);
+  border: 1px solid rgb(74 222 128 / .35);
+  font: 600 12px/1 var(--font-body);
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--dest-green);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .45s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+.dest-pin-label::before {   /* a small tick */
+  content: ""; position: absolute; left: 11px; top: 50%;
+  width: 8px; height: 4px; margin-top: -3px;
+  border: solid currentColor; border-width: 0 0 2px 2px;
+  transform: rotate(-45deg);
+}
+/* once the truck has parked */
+.dest-scene.is-arrived .dest-pin-ring {
+  border-style: solid; border-color: rgb(74 222 128 / .85);
+  animation: dest-ring 2.4s cubic-bezier(.22, 1, .36, 1) infinite;
+}
+.dest-scene.is-arrived .dest-pin-label { opacity: 1; transform: translate(-50%, 0); }
+@keyframes dest-ring {
+  0%   { box-shadow: 0 0 0 0 rgb(74 222 128 / .35); }
+  70%  { box-shadow: 0 0 0 22px rgb(74 222 128 / 0); }
+  100% { box-shadow: 0 0 0 0 rgb(74 222 128 / 0); }
+}
+
+/* phones: the scene sits under the copy as its own short strip */
+@media (max-width: 767px) {
+  .home-dest { min-height: 0; padding-bottom: 0; }
+  .dest-scene { position: relative; inset: auto; height: 230px; margin: 36px calc(-1 * var(--dest-pad)) 0; }
+  /* the pin sits near the right edge, so its tag hangs to the left of it */
+  .dest-pin-label { font-size: 11px; transform: translate(-82%, 6px); }
+  .dest-scene.is-arrived .dest-pin-label { transform: translate(-82%, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dest-scene.is-arrived .dest-pin-ring { animation: none; }
+  .dest-pin-label { transition: none; }
+}
